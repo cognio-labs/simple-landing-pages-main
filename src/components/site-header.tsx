@@ -107,10 +107,10 @@ export function SiteHeader() {
               </div>
             ) : (
               <Link
-                to="/login"
+                to="/build"
                 className="inline-flex h-9 items-center gap-2 rounded-full bg-gradient-brand px-6 text-xs font-semibold text-brand-foreground shadow-md transition-transform hover:scale-[1.03]"
               >
-                Login
+                Start building
               </Link>
             )}
           </div>

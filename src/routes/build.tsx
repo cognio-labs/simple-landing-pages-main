@@ -69,7 +69,7 @@ function BuildPage() {
       setSession(session);
       setAuthLoading(false);
       if (!session) {
-        navigate({ to: "/login" });
+        navigate({ to: "/" });
       }
     });
 
@@ -78,7 +78,7 @@ function BuildPage() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (!session) {
-        navigate({ to: "/login" });
+        navigate({ to: "/" });
       }
     });
 
