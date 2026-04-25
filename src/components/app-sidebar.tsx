@@ -20,7 +20,7 @@ export function AppSidebar() {
   const mainItems = [
     { icon: Home, label: "Home", href: "/" },
     { icon: Search, label: "Search", href: "#", kbd: "Ctrl K" },
-    { icon: Layers, label: "Resources", href: "#" },
+    { icon: Layers, label: "Resources", href: "/resources" },
     { icon: Link2, label: "Connectors", href: "#" },
   ];
 
