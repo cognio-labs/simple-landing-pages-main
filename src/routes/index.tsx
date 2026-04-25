@@ -42,8 +42,6 @@ function IndexPage() {
       <main>
         <Hero />
         <Steps />
-        <Features />
-        <Templates />
         <FAQ />
         <FinalCTA />
       </main>
