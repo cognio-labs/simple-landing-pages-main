@@ -52,50 +52,65 @@ export function VersionsSidebar({ versions, activeIndex, onRevert, open }: Props
   return (
     <aside
       aria-label="Version history"
-      className="hidden w-64 shrink-0 flex-col border-r border-border bg-background/60 lg:flex"
+      className="absolute inset-y-0 left-0 z-50 w-72 flex-col border-r border-border bg-background/95 backdrop-blur-md transition-all lg:relative lg:flex lg:w-64 lg:bg-background/60 lg:backdrop-blur-none"
     >
-      <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
         <History className="h-3.5 w-3.5" />
-        Versions
+        Version History
       </div>
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-3 scrollbar-none">
         {versions.length === 0 ? (
-          <p className="px-3 py-6 text-center text-xs text-muted-foreground">
-            Your generated versions will appear here.
-          </p>
+          <div className="flex h-full flex-col items-center justify-center px-4 py-12 text-center">
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-accent/50 text-muted-foreground/50">
+               <History className="h-5 w-5" />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              No versions yet. Start chatting to create your first landing page!
+            </p>
+          </div>
         ) : (
-          <ol className="space-y-1.5">
-            {versions.map((v, i) => {
+          <ol className="space-y-2">
+            {[...versions].reverse().map((v, i) => {
+              const actualIndex = versions.length - 1 - i;
               const isActive = v.index === activeIndex;
-              const isLatest = i === versions.length - 1;
+              const isLatest = actualIndex === versions.length - 1;
               return (
                 <li key={v.index}>
                   <button
                     type="button"
                     onClick={() => onRevert(v)}
                     aria-current={isActive ? "true" : undefined}
-                    className={`group flex w-full flex-col gap-1 rounded-xl border px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`group flex w-full flex-col gap-1.5 rounded-xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       isActive
-                        ? "border-primary/50 bg-primary/10"
-                        : "border-border bg-card hover:border-primary/30 hover:bg-accent/50"
+                        ? "border-primary/40 bg-primary/5 shadow-sm ring-1 ring-primary/20"
+                        : "border-border bg-card/50 hover:border-primary/30 hover:bg-accent/50 hover:shadow-sm"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                        v{i + 1}
-                        {isLatest && " · latest"}
+                      <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-muted-foreground/70">
+                        v{actualIndex + 1}
+                        {isLatest && (
+                          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" title="Latest version" />
+                        )}
                       </span>
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-[10px] tabular-nums text-muted-foreground/60">
                         {formatTime(v.ts)}
                       </span>
                     </div>
-                    <p className="line-clamp-2 text-xs text-foreground">
+                    <p className={`line-clamp-2 text-xs leading-relaxed transition-colors ${
+                      isActive ? "font-medium text-foreground" : "text-muted-foreground group-hover:text-foreground"
+                    }`}>
                       {v.label}
                     </p>
-                    {!isActive && (
+                    {isActive ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-primary">
+                        <div className="h-1 w-1 rounded-full bg-primary" />
+                        Current version
+                      </span>
+                    ) : (
                       <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
                         <RotateCcw className="h-2.5 w-2.5" />
-                        Click to revert
+                        Restore this version
                       </span>
                     )}
                   </button>

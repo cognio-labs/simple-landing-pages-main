@@ -247,38 +247,46 @@ function Features() {
 }
 
 function Templates() {
+  const navigate = useNavigate();
   const templates = [
     {
       title: "SaaS Product Launch",
       body: "Crisp benefits, screenshots, and clear CTAs.",
       tone: "from-violet-500/30 to-fuchsia-500/30",
+      prompt: "A SaaS product launch page with a modern, crisp design, including benefit sections, screenshot placeholders, and clear CTAs.",
     },
     {
       title: "Mobile App Preorder",
       body: "Tease features, collect emails, drive installs.",
       tone: "from-sky-500/30 to-indigo-500/30",
+      prompt: "A mobile app preorder page that teases upcoming features, includes an email collection form, and app store badges.",
     },
     {
       title: "E-commerce Drop",
       body: "Spotlight a limited drop with countdown and checkout.",
       tone: "from-rose-500/30 to-orange-500/30",
+      prompt: "An e-commerce landing page for a limited edition drop, featuring a countdown timer and prominent product spotlight.",
     },
     {
       title: "Webinar Registration",
       body: "Agenda, speakers, schedule and reminders that convert.",
       tone: "from-emerald-500/30 to-teal-500/30",
+      prompt: "A high-converting webinar registration page with speaker bios, agenda details, and a clear registration form.",
     },
     {
       title: "Online Course Launch",
       body: "Sell instructor-led or self-paced with outcomes.",
       tone: "from-amber-500/30 to-pink-500/30",
+      prompt: "A landing page for an online course launch, focusing on learning outcomes, course curriculum, and student testimonials.",
     },
     {
       title: "Real Estate Listing",
       body: "Highlights, neighborhood, and tour-request CTA.",
       tone: "from-cyan-500/30 to-blue-500/30",
+      prompt: "A real estate listing page featuring property highlights, neighborhood information, and a tour request call-to-action.",
     },
   ];
+
   return (
     <section id="templates" className="border-t border-border/60 py-24">
       <div className="mx-auto max-w-6xl px-6">
@@ -290,17 +298,19 @@ function Templates() {
             See what it can create
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Every template starts as a prompt. Tweak the brief, get a new page.
+            Pick a style to get started instantly, then customize it by chatting.
           </p>
         </div>
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {templates.map((t) => (
-            <div
+            <button
               key={t.title}
-              className="group overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10"
+              onClick={() => navigate({ to: "/build", search: { prompt: t.prompt } })}
+              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={`Start with ${t.title} template`}
             >
               <div
-                className={`relative h-40 bg-gradient-to-br ${t.tone}`}
+                className={`relative h-40 w-full bg-gradient-to-br ${t.tone}`}
                 aria-hidden
               >
                 <div className="absolute inset-4 rounded-xl bg-card/70 p-4 backdrop-blur-sm">
@@ -316,8 +326,11 @@ function Templates() {
               <div className="p-5">
                 <h3 className="font-semibold">{t.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t.body}</p>
+                <div className="mt-4 flex items-center gap-2 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                  Use this template <ArrowRight className="h-3 w-3" />
+                </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
