@@ -23,6 +23,7 @@ function LoginPage() {
     setLoading(true);
 
     try {
+      console.log("Attempting auth with:", email);
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email,
@@ -31,14 +32,20 @@ function LoginPage() {
         if (error) throw error;
         toast.success("Check your email for the confirmation link!");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
+        if (error) {
+          console.error("Auth error:", error);
+          throw error;
+        }
+        console.log("Auth success:", data);
+        toast.success("Signed in successfully!");
         navigate({ to: "/build" });
       }
     } catch (error: any) {
+      console.error("Catch error:", error);
       toast.error(error.message || "Authentication failed");
     } finally {
       setLoading(false);
