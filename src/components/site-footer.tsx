@@ -9,10 +9,10 @@ export function SiteFooter() {
             <Sparkles className="h-4 w-4" />
           </span>
           <span className="font-display font-semibold text-foreground">
-            LandingForge
+            PagePilot AI
           </span>
         </div>
-        <p>© {new Date().getFullYear()} LandingForge. Build pages, not slides.</p>
+        <p>© {new Date().getFullYear()} PagePilot AI. Build pages, not slides.</p>
       </div>
     </footer>
   );

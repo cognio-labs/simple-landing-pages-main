@@ -18,17 +18,17 @@ import { SiteFooter } from "@/components/site-footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LandingForge — Build Stunning AI Landing Pages Instantly" },
+      { title: "PagePilot AI — Build High-Converting Landing Pages in Seconds with AI" },
       {
         name: "description",
         content:
-          "Describe your idea in one sentence. LandingForge's AI generates a complete, beautiful landing page in seconds — and you keep editing it just by chatting.",
+          "Create, customize, and launch beautiful landing pages — no coding needed. PagePilot AI generates complete pages instantly.",
       },
-      { property: "og:title", content: "LandingForge — AI Landing Page Builder" },
+      { property: "og:title", content: "PagePilot AI — AI Landing Page Builder" },
       {
         property: "og:description",
         content:
-          "Type an idea, get a stunning landing page in seconds. Share via link, edit by chatting.",
+          "Build High-Converting Landing Pages in Seconds with AI. Create, customize, and launch beautiful pages instantly.",
       },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -75,13 +75,11 @@ function Hero() {
         </div>
 
         <h1 className="max-w-4xl text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-          Build stunning{" "}
-          <span className="text-gradient-brand">AI landing pages</span> instantly
+          Build <span className="text-gradient-brand">High-Converting</span> Landing Pages in Seconds with AI
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Describe your idea in one sentence. Our AI writes the copy, designs
-          the layout, and ships a live page you can share — in under 30 seconds.
+          Create, customize, and launch beautiful landing pages — no coding needed.
         </p>
 
         <form

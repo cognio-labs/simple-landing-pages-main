@@ -17,24 +17,24 @@ export const Route = createFileRoute("/p/$pageId")({
     meta: [
       {
         title: loaderData
-          ? `${truncate(loaderData.prompt, 60)} · LandingForge`
-          : "Landing page",
+          ? `${truncate(loaderData.prompt, 60)} · PagePilot AI`
+          : "Build High-Converting Landing Pages · PagePilot AI",
       },
       {
         name: "description",
         content: loaderData
           ? truncate(loaderData.prompt, 155)
-          : "An AI-generated landing page from LandingForge.",
+          : "An AI-generated landing page from PagePilot AI.",
       },
       {
         property: "og:title",
-        content: loaderData ? truncate(loaderData.prompt, 60) : "Landing page",
+        content: loaderData ? truncate(loaderData.prompt, 60) : "PagePilot AI Landing Page",
       },
       {
         property: "og:description",
         content: loaderData
           ? truncate(loaderData.prompt, 155)
-          : "Generated with LandingForge.",
+          : "Generated with PagePilot AI.",
       },
     ],
   }),
@@ -75,7 +75,7 @@ function PublicPage() {
         <div className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-border bg-background/90 px-4 py-2 text-xs text-muted-foreground shadow-lg backdrop-blur">
           <Sparkles className="h-3.5 w-3.5 text-primary" />
           Built with{" "}
-          <span className="font-semibold text-foreground">LandingForge</span>
+          <span className="font-semibold text-foreground">PagePilot AI</span>
         </div>
         <Link
           to="/build"
@@ -88,7 +88,7 @@ function PublicPage() {
       </div>
 
       <iframe
-        title={`LandingForge page ${params.pageId}`}
+        title={`PagePilot AI page ${params.pageId}`}
         srcDoc={data.html}
         className="h-screen w-full border-0"
         sandbox="allow-scripts allow-same-origin allow-popups"

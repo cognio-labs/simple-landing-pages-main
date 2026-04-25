@@ -47,7 +47,7 @@ export const Route = createFileRoute("/build")({
   }),
   head: () => ({
     meta: [
-      { title: "Build your landing page · LandingForge" },
+      { title: "Build your landing page · PagePilot AI" },
       {
         name: "description",
         content: "Chat with the AI to build and refine your landing page live.",
@@ -344,7 +344,7 @@ function BuildPage() {
                 <span className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-brand text-brand-foreground">
                   <Sparkles className="h-3.5 w-3.5" />
                 </span>
-                <span className="hidden sm:inline">LandingForge</span>
+                <span className="hidden sm:inline">PagePilot AI</span>
               </span>
             </div>
 

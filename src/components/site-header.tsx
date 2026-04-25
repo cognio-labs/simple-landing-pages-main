@@ -49,7 +49,7 @@ export function SiteHeader() {
             <Sparkles className="h-5 w-5" />
           </span>
           <span className="font-display text-lg font-bold tracking-tight">
-            Landing<span className="text-gradient-brand">Forge</span>
+            PagePilot<span className="text-gradient-brand"> AI</span>
           </span>
         </Link>
 
