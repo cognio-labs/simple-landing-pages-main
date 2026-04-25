@@ -17,7 +17,8 @@ RULES:
 - Fully responsive (mobile-first).
 - Include semantic sections: hero, features/benefits, social proof or testimonials, CTA, footer.
 - Use real-looking copy tailored to the brief, not Lorem ipsum.
-- For images, use https://images.unsplash.com/... URLs OR inline SVG. Prefer SVG for icons.
+- For images, use high-quality, relevant https://images.unsplash.com/... URLs for EVERY section that needs an image (hero, features, etc.). Ensure EVERY "box" or section has a descriptive, high-quality image.
+- Use inline SVG for icons.
 - Add subtle CSS animations where they enhance the design.
 - The page must work standalone in any browser.
 
@@ -73,23 +74,74 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    // Get user from auth header
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Missing Authorization header");
+    }
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Check tokens
+    const { data: profile, error: profileErr } = await supabase
+      .from("profiles")
+      .select("tokens_remaining, last_token_reset, is_admin")
+      .eq("id", user.id)
+      .single();
+    
+    if (profileErr) throw profileErr;
+
+    let tokens = profile.tokens_remaining;
+    const lastReset = new Date(profile.last_token_reset);
+    const now = new Date();
+    
+    // Reset tokens if a day has passed
+    if (now.getTime() - lastReset.getTime() > 24 * 60 * 60 * 1000) {
+      tokens = 20;
+      await supabase
+        .from("profiles")
+        .update({ tokens_remaining: 20, last_token_reset: now.toISOString() })
+        .eq("id", user.id);
+    }
+
+    if (tokens <= 0 && !profile.is_admin) {
+      return new Response(JSON.stringify({ error: "Daily token limit reached (20 websites/day)" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Load existing page if editing
     type ExistingPage = {
       id: string;
       html: string;
       prompt: string;
       messages: Array<{ role: string; content: string }>;
+      user_id: string;
     };
     let existing: ExistingPage | null = null;
 
     if (pageId) {
       const { data, error } = await supabase
         .from("pages")
-        .select("id, html, prompt, messages")
+        .select("id, html, prompt, messages, user_id")
         .eq("id", pageId)
         .maybeSingle();
       if (error) throw error;
       existing = (data ?? null) as ExistingPage | null;
+
+      if (existing && existing.user_id !== user.id && !profile.is_admin) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     const conversation: Array<{ role: string; content: string }> = [
@@ -175,6 +227,14 @@ Deno.serve(async (req) => {
     const rawContent: string = aiJson.choices?.[0]?.message?.content ?? "";
     const html = extractHtml(rawContent);
 
+    // Decrement tokens
+    if (!profile.is_admin) {
+      await supabase
+        .from("profiles")
+        .update({ tokens_remaining: tokens - 1 })
+        .eq("id", user.id);
+    }
+
     if (!html || !/<html/i.test(html)) {
       console.error("Invalid HTML from model:", rawContent.slice(0, 500));
       return new Response(
@@ -240,6 +300,7 @@ Deno.serve(async (req) => {
       html,
       prompt: userMessage,
       messages: initialMessages,
+      user_id: user.id,
     });
     if (insErr) throw insErr;
 
