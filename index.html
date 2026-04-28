@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Nimbus — Launch beautiful landing pages</title>
+    <meta name="description" content="Nimbus helps teams build lightning-fast landing pages with a designer-first builder, serverless hosting, and intelligent SEO." />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="nav-container">
+      <nav class="nav">
+        <a class="logo" href="#home">Nimbus</a>
+        <button class="nav-toggle" aria-label="Open menu" id="navToggle">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#benefits">Benefits</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a class="cta-mini" href="#pricing">Get Started</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="hero">
+        <div class="hero-inner glass">
+          <div class="hero-content">
+            <h1 class="headline">Build fast, beautiful landing pages — without the headache</h1>
+            <p class="subhead">Nimbus combines a simple visual editor, high-performance hosting, and SEO-first defaults so your product looks premium and loads instantly.</p>
+            <div class="hero-ctas">
+              <a id="primaryCta" class="btn btn-primary" href="#features">Start Free — No Card</a>
+              <a class="btn btn-ghost" href="#about">See How It Works</a>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="mockup glass small-card">
+              <div class="mockup-header">Live Editor</div>
+              <div class="mockup-body">
+                <div class="line"></div>
+                <div class="line small"></div>
+                <div class="line"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="section container">
+        <h2 class="section-title">Everything you need to convert visitors</h2>
+        <p class="section-sub">Powerful features designed for modern teams: launch faster, iterate confidently, and scale with performance in mind.</p>
+        <div class="features-grid">
+          <article class="feature card glass">
+            <svg viewBox="0 0 24 24" class="icon" aria-hidden><path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+            <h3>Visual Editor</h3>
+            <p>Edit content visually with instant preview and reusable components.</p>
+          </article>
+
+          <article class="feature card glass">
+            <svg viewBox="0 0 24 24" class="icon" aria-hidden><path fill="currentColor" d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+            <h3>Blazing Performance</h3>
+            <p>Optimized builds, CDN delivery, and automatic image optimization out of the box.</p>
+          </article>
+
+          <article class="feature card glass">
+            <svg viewBox="0 0 24 24" class="icon" aria-hidden><path fill="currentColor" d="M3 12h18v2H3z"/></svg>
+            <h3>SEO & Analytics</h3>
+            <p>Built-in SEO defaults, metadata templates, and simple analytics to track conversions.</p>
+          </article>
+
+          <article class="feature card glass">
+            <svg viewBox="0 0 24 24" class="icon" aria-hidden><path fill="currentColor" d="M12 2v20"/></svg>
+            <h3>Collaborative Workflows</h3>
+            <p>Invite teammates, comment on changes, and roll back with revision history.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="benefits" class="section alt">
+        <div class="container layout">
+          <div class="benefits glass">
+            <h2>Why teams choose Nimbus</h2>
+            <ul>
+              <li><strong>Reduce time-to-market:</strong> Ship pages in hours, not days.</li>
+              <li><strong>Focus on conversion:</strong> Pre-built templates and A/B-ready components.</li>
+              <li><strong>Scale effortlessly:</strong> CDN-backed hosting with instant cache invalidation.</li>
+            </ul>
+          </div>
+          <div class="stats glass">
+            <div class="stat">
+              <div class="num">99.9%</div>
+              <div class="label">Uptime</div>
+            </div>
+            <div class="stat">
+              <div class="num"><span>~0.4s</span></div>
+              <div class="label">Avg. First Paint</div>
+            </div>
+            <div class="stat">
+              <div class="num">1,200+</div>
+              <div class="label">Teams onboarded</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section container">
+        <h2 class="section-title">Designed for product-led growth</h2>
+        <p class="section-sub">From founder-led marketing sites to enterprise microsites, Nimbus gives teams the tools they need to grow traffic and increase conversions.</p>
+        <div class="about-grid">
+          <div class="about-card glass">
+            <h3>Integrations</h3>
+            <p>Connect your analytics, marketing stack, and e-commerce provider with a few clicks.</p>
+          </div>
+          <div class="about-card glass">
+            <h3>Security</h3>
+            <p>Automatic TLS, configurable access rules, and SOC-ready security practices.</p>
+          </div>
+          <div class="about-card glass">
+            <h3>Support</h3>
+            <p>Dedicated onboarding and 24/7 support for launch-critical issues.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="footer-logo" href="#home">Nimbus</a>
+          <p class="muted">Fast landing pages, delightful conversion.</p>
+        </div>
+        <div class="links">
+          <a href="#features">Features</a>
+          <a href="#benefits">Benefits</a>
+          <a href="#about">About</a>
+        </div>
+        <div class="legal muted">© 2026 Nimbus, Inc. All rights reserved.</div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
