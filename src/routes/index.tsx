@@ -11,6 +11,9 @@ import {
   Gauge,
   ChevronDown,
   Check,
+  Code2,
+  Layout,
+  Cpu,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -18,13 +21,13 @@ import { SiteFooter } from "@/components/site-footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PagePilot AI — Build Beautiful Websites in Seconds with AI" },
+      { title: "Aryan AI Studio — AI-Powered Website Builder" },
       {
         name: "description",
         content:
-          "Create, customize, and launch beautiful multi-page websites — no coding needed. PagePilot AI generates complete sites instantly.",
+          "The most powerful AI website builder for creators and entrepreneurs. Generate professional websites from a single prompt.",
       },
-      { property: "og:title", content: "PagePilot AI — AI Website Builder" },
+      { property: "og:title", content: "Aryan AI Studio" },
       {
         property: "og:description",
         content:
@@ -38,16 +41,15 @@ export const Route = createFileRoute("/")({
 
 function IndexPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#020202] text-white selection:bg-primary/30">
       <SiteHeader />
       <main>
         <Hero />
-        <Steps />
-        <Templates />
-        <ConversionFeatures />
+        <Features />
+        <HowItWorks />
+        <LivePreview />
         <Pricing />
         <FAQ />
-        <FinalCTA />
       </main>
       <SiteFooter />
     </div>
@@ -65,54 +67,60 @@ function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-hero-glow" aria-hidden />
-      <div className="relative mx-auto flex max-w-5xl flex-col items-center px-6 pb-24 pt-20 text-center sm:pt-28">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
-          Powered by AI · No code required
+    <section className="relative pt-32 pb-24 overflow-hidden">
+      {/* Background glow effects */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/20 blur-[120px] rounded-full opacity-30 pointer-events-none" />
+      <div className="absolute -top-[10%] right-[10%] w-[400px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full opacity-20 pointer-events-none" />
+      
+      <div className="relative mx-auto flex max-w-5xl flex-col items-center px-6 text-center">
+        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold text-primary shadow-[0_0_15px_rgba(var(--primary),0.2)] backdrop-blur-md animate-in fade-in slide-in-from-top-4 duration-700">
+          <Sparkles className="h-3.5 w-3.5" />
+          The Future of Web Design is Here
         </div>
 
-        <h1 className="max-w-4xl text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-          Build <span className="text-gradient-brand">Beautiful</span> Websites in Seconds with AI
+        <h1 className="max-w-4xl text-balance font-display text-5xl font-extrabold leading-[1.1] tracking-tight sm:text-6xl md:text-7xl lg:text-8xl animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+          Turn your <span className="text-primary italic">vision</span> into a <span className="text-white">live website</span> in seconds
         </h1>
 
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Create, customize, and launch beautiful multi-page websites — no coding needed.
+        <p className="mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+          Aryan AI Studio generates professional, high-converting websites from a simple prompt. No code. No stress. Just magic.
         </p>
 
         <form
           onSubmit={submit}
-          className="mt-10 w-full max-w-2xl rounded-2xl border border-border bg-card p-2 shadow-xl shadow-primary/10"
+          className="mt-12 w-full max-w-3xl rounded-3xl border border-white/10 bg-white/[0.03] p-2.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300"
         >
           <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-            <input
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="A website for a meditation app for busy parents…"
-              className="flex-1 rounded-xl bg-transparent px-4 py-3 text-base outline-none placeholder:text-muted-foreground/70"
-            />
+            <div className="flex-1 flex items-center px-4">
+              <Wand2 className="h-5 w-5 text-muted-foreground mr-3" />
+              <input
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Describe your website idea..."
+                className="flex-1 bg-transparent py-4 text-base md:text-lg outline-none placeholder:text-muted-foreground/40"
+              />
+            </div>
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-brand px-6 py-3 text-sm font-semibold text-brand-foreground shadow-md shadow-primary/30 transition-transform hover:scale-[1.02]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground shadow-[0_0_25px_rgba(var(--primary),0.4)] transition-all hover:scale-[1.03] active:scale-95"
             >
-              Generate website
+              Build with AI
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         </form>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground/60 animate-in fade-in duration-700 delay-500">
           <span>Try:</span>
           {[
-            "Coffee subscription for remote workers",
-            "AI-powered resume reviewer",
-            "Boutique yoga studio in Lisbon",
+            "Dark luxury portfolio for a designer",
+            "Modern SaaS landing page",
+            "Minimalist blog for a travel writer",
           ].map((s) => (
             <button
               key={s}
               onClick={() => setPrompt(s)}
-              className="rounded-full border border-border bg-background/70 px-3 py-1 transition-colors hover:border-primary/40 hover:text-foreground"
+              className="rounded-full border border-white/5 bg-white/5 px-4 py-1.5 transition-all hover:border-primary/50 hover:text-white hover:bg-primary/5"
             >
               {s}
             </button>
@@ -123,321 +131,110 @@ function Hero() {
   );
 }
 
-function Steps() {
-  const steps = [
-    {
-      icon: Wand2,
-      title: "Describe your idea",
-      body: "Tell the AI about your product, audience, and vibe. One sentence is enough.",
-    },
-    {
-      icon: Sparkles,
-      title: "AI builds the website",
-      body: "Navigation, pages, sections, layout and visuals — generated in seconds, ready to ship.",
-    },
-    {
-      icon: Rocket,
-      title: "Share or keep editing",
-      body: "Get a unique link instantly. Refine anything just by chatting with the AI.",
-    },
-  ];
-  return (
-    <section id="how" className="border-t border-border/60 py-24">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-            How it works
-          </p>
-          <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-            From idea to live website in 3 steps
-          </h2>
-        </div>
-
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
-          {steps.map((s, i) => (
-            <div
-              key={s.title}
-              className="group relative rounded-2xl border border-border bg-card p-7 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10"
-            >
-              <div className="absolute -top-4 left-7 inline-flex h-8 items-center justify-center rounded-full bg-gradient-brand px-3 text-xs font-bold text-brand-foreground shadow">
-                Step {i + 1}
-              </div>
-              <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-primary">
-                <s.icon className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Templates() {
-  const navigate = useNavigate();
-  const templates = [
-    {
-      title: "SaaS Product Launch",
-      body: "Announce your new SaaS with crisp benefits, screenshots, and clear CTAs.",
-      image:
-        "https://images.unsplash.com/photo-1556155092-8707de31f9c4?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for a SaaS product launch. Include Home, Features, Pricing, FAQ, and Contact. Modern, clean, and conversion-focused.",
-    },
-    {
-      title: "Mobile App Preorder",
-      body: "Tease features, collect emails, and drive early installs with urgency.",
-      image:
-        "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for a mobile app launch. Include Home, Features, Roadmap, Testimonials, and Contact. Energetic and modern.",
-    },
-    {
-      title: "E-commerce Drop",
-      body: "Spotlight a limited-run product drop with countdown and fast checkout.",
-      image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for a limited-run e-commerce drop. Include Home, Products, About, Shipping & Returns, and Contact. Bold and premium.",
-    },
-    {
-      title: "Fintech Demo Booking",
-      body: "Explain compliance-aware value props and convert traffic into demo calls.",
-      image:
-        "https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for a fintech product. Include Home, Security, Use Cases, Pricing, and Book a Demo. Trustworthy and crisp.",
-    },
-    {
-      title: "Healthcare Clinic Lead Gen",
-      body: "Educate patients and capture inquiries with HIPAA-friendly structure.",
-      image:
-        "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for a healthcare clinic. Include Home, Services, Doctors, Insurance, and Contact. Calm, accessible, and reassuring.",
-    },
-    {
-      title: "Online Course Launch",
-      body: "Sell an instructor-led or self-paced course with outcomes and modules.",
-      image:
-        "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for an online course. Include Home, Curriculum, Instructor, Pricing, and FAQ. Clear, structured, and motivating.",
-    },
-    {
-      title: "Webinar Registration",
-      body: "Convert visitors with agenda, speakers, schedule, and reminders.",
-      image:
-        "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for a webinar. Include Home, Agenda, Speakers, Register, and FAQ. Simple, focused, and modern.",
-    },
-    {
-      title: "Real Estate Property Lead Gen",
-      body: "Showcase listings with highlights, neighborhood, and tour request CTA.",
-      image:
-        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
-      prompt:
-        "A multi-page website for a real estate listing. Include Home, Gallery, Neighborhood, Amenities, and Book a Tour. Luxury editorial style.",
-    },
-  ];
-
-  return (
-    <section id="templates" className="border-t border-border/60 py-24 bg-secondary/10">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-            Template Library
-          </p>
-          <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-            See what it can create
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Explore our curated selection of high-converting templates.
-          </p>
-        </div>
-        
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {templates.map((t) => (
-            <button
-              key={t.title}
-              type="button"
-              onClick={() => navigate({ to: "/build", search: { prompt: t.prompt } })}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition-all hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <div className="aspect-video w-full bg-muted overflow-hidden">
-                <img
-                  src={t.image}
-                  alt=""
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-sm">{t.title}</h3>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{t.body}</p>
-              </div>
-            </button>
-          ))}
-        </div>
-        
-        <div className="mt-12 text-center">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/build" })}
-            className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
-          >
-            Generate a website <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ConversionFeatures() {
+function Features() {
   const features = [
     {
-      tag: "Most Popular",
-      icon: Rocket,
-      title: "Lightning-Fast Website Builder",
-      body: "With our AI website builder, you can create a professional multi-page website in just a few clicks. The system handles navigation, structure, layout, and responsive design automatically, so you never waste time on coding or complex setup. Whether you’re testing a marketing idea or launching a new product, you can go live in minutes instead of weeks.",
-      cta: "Start Building Now",
-      stat: "Launch in under 5 minutes",
-      detail: "Fast, responsive layouts in minutes.",
-      image:
-        "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=80",
+      icon: Cpu,
+      title: "Advanced AI Engine",
+      body: "Powered by the latest LLMs, generating not just code, but structure and strategy.",
     },
     {
-      tag: "Editor's Choice",
-      icon: Gauge,
-      title: "AI-Powered Conversion Engine",
-      body: "Our AI website generator doesn’t just design pages—it optimizes them for performance. From crafting clear positioning to selecting persuasive call-to-action buttons, the AI uses proven conversion principles to maximize engagement. This ensures every page in your site is designed to capture leads and drive sales effortlessly.",
-      cta: "Boost Conversions",
-      stat: "3x higher engagement rates",
-      detail: "Persuasion-first sections and CTAs.",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=80",
+      icon: Code2,
+      title: "Clean React Code",
+      body: "Every site is built with React and Tailwind CSS. Modern, fast, and scalable.",
     },
     {
-      tag: "New Feature",
-      icon: Globe,
-      title: "Free AI Website Builder",
-      body: "Building your online presence shouldn’t be costly. With our free AI website builder, you can design, customize, and publish complete websites without paying upfront fees. Experiment with different ideas, test audiences, and grow your business risk-free. When you’re ready to scale, the platform grows with you.",
-      cta: "Try for Free",
-      stat: "$0 to get started",
-      detail: "Start free with 3 tokens.",
-      image:
-        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80",
+      icon: Layout,
+      title: "Designer Quality",
+      body: "Professional layouts with perfect spacing, typography, and interactive elements.",
     },
     {
-      tag: "Pro Feature",
-      icon: Smartphone,
-      title: "Complete AI Website Builder",
-      body: "Go beyond simple pages with a full ai website builder that allows you to create entire websites, including product showcases, blogs, and multi-page funnels. Every page is fully optimized for SEO, mobile devices, and speed, ensuring your business stays competitive online. Perfect for startups, agencies, or entrepreneurs who want scalability from day one.",
-      cta: "Build Full Sites",
-      stat: "SEO and mobile ready",
-      detail: "Multi-page foundations with SEO basics.",
-      image:
-        "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80",
+      icon: Zap,
+      title: "Instant Live Preview",
+      body: "See your changes in real-time as you chat with the assistant to refine details.",
     },
-    {
-      tag: "Creative Tool",
-      icon: Wand2,
-      title: "Fake Website Maker",
-      body: "Create realistic fake websites and mockups in minutes. Perfect for presentations, client demos, portfolio showcases, or testing design concepts. Generate professional-looking dummy sites with authentic content, images, and layouts that look indistinguishable from real websites.",
-      cta: "Create Fake Website!",
-      stat: "100% Realistic",
-      detail: "Mockups for demos and pitches.",
-      image:
-        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1600&q=80",
-    }
   ];
 
   return (
-    <section id="features" className="border-t border-border/60 py-24">
+    <section className="py-24 border-y border-white/5 bg-[#050505]">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="text-center mb-16">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-            Built for Conversion, Powered by AI
-          </p>
-          <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-            Smarter AI Landing Page Builder
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-            Our AI website builder gives you layouts and copy optimized for engagement, saving you hours of manual work.
-          </p>
-        </div>
-
-        <div className="grid gap-12 lg:grid-cols-2 items-center mb-24">
-          <div className="space-y-6">
-             <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10">
-                <h3 className="text-xl font-bold mb-2">Websites in Minutes</h3>
-                <p className="text-muted-foreground text-sm">Generate a complete multi-page website from a simple idea—fast, professional, and ready to use.</p>
-             </div>
-             <div className="p-6 rounded-2xl bg-secondary/5 border border-secondary/10">
-                <h3 className="text-xl font-bold mb-2">Powerful AI Landing Page Generator</h3>
-                <p className="text-muted-foreground text-sm">Use the AI website generator to create pages with strong headlines, visuals, and CTAs that drive higher conversions.</p>
-             </div>
-             <div className="p-6 rounded-2xl bg-accent/5 border border-accent/10">
-                <h3 className="text-xl font-bold mb-2">Free AI Website Builder Access</h3>
-                <p className="text-muted-foreground text-sm">Get started with our free AI website builder, perfect for testing ideas or launching your first campaign without upfront costs.</p>
-             </div>
-          </div>
-          <div className="relative">
-             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80"
-              alt=""
-              className="rounded-3xl shadow-2xl border border-border"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-24">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((f, i) => (
-            <div key={f.title} className={`flex flex-col gap-12 lg:flex-row items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
-              <div className="flex-1 space-y-6">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1 text-xs font-bold text-primary">
-                  {f.tag}
-                </div>
-                <h3 className="text-3xl font-bold tracking-tight">{f.title}</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {f.body}
-                </p>
-                <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                   <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-brand px-6 py-3 text-sm font-semibold text-brand-foreground shadow-md transition-transform hover:scale-105">
-                     {f.cta}
-                   </button>
-                   <div className="space-y-1">
-                      <p className="text-sm font-bold">{f.stat}</p>
-                      <p className="text-xs text-muted-foreground">{f.detail}</p>
-                   </div>
-                </div>
+            <div key={i} className="group p-8 rounded-3xl border border-white/5 bg-white/[0.02] transition-all hover:border-primary/30 hover:bg-primary/[0.03]">
+              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-[0_0_15px_rgba(var(--primary),0.2)]">
+                <f.icon className="h-6 w-6" />
               </div>
-              <div className="flex-1 w-full max-w-xl aspect-square bg-muted rounded-3xl flex items-center justify-center border border-border overflow-hidden">
-                <img src={f.image} alt="" className="h-full w-full object-cover" loading="lazy" />
-              </div>
+              <h3 className="text-xl font-bold mb-3">{f.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{f.body}</p>
             </div>
           ))}
         </div>
-
-        <div className="mt-24 grid gap-8 md:grid-cols-3">
-           <div className="text-center p-8 rounded-2xl border border-border bg-card">
-              <h4 className="text-xl font-bold mb-3">Complete AI Website Builder Solution</h4>
-              <p className="text-sm text-muted-foreground">Build full websites, including blogs, product pages, and multi-page sites—without writing code.</p>
-           </div>
-           <div className="text-center p-8 rounded-2xl border border-border bg-card">
-              <h4 className="text-xl font-bold mb-3">Conversion-Optimized by Default</h4>
-              <p className="text-sm text-muted-foreground">Every page is SEO-friendly, mobile-ready, and tested for performance, so your visitors turn into customers effortlessly.</p>
-           </div>
-           <div className="text-center p-8 rounded-2xl border border-primary/20 bg-primary/5">
-              <h4 className="text-xl font-bold mb-3 text-primary">Smarter AI Builder</h4>
-              <p className="text-sm text-muted-foreground">The most powerful AI generator for modern marketing teams and entrepreneurs.</p>
-           </div>
-        </div>
       </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  return (
+    <section className="py-24 relative overflow-hidden">
+       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full opacity-20 pointer-events-none" />
+       <div className="mx-auto max-w-6xl px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+             <div className="flex-1">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">
+                  From <span className="text-primary italic">Thought</span> to <span className="text-white underline decoration-primary decoration-4 underline-offset-8">Published</span> in 5 Minutes.
+                </h2>
+                <div className="space-y-8">
+                   {[
+                     { step: "01", title: "Describe Your Vision", text: "Tell the AI what you want to build. One sentence or a detailed brief." },
+                     { step: "02", title: "Watch It Build", text: "Our AI constructs the entire site—pages, copy, images, and layout." },
+                     { step: "03", title: "Refine by Chatting", text: "Ask for changes like 'make it darker' or 'add a testimonial section'." },
+                     { step: "04", title: "Go Live", text: "Publish to your own subdomain instantly with one click." }
+                   ].map((item, i) => (
+                     <div key={i} className="flex gap-6">
+                        <span className="text-2xl font-black text-white/10">{item.step}</span>
+                        <div>
+                           <h4 className="text-lg font-bold mb-1">{item.title}</h4>
+                           <p className="text-sm text-muted-foreground">{item.text}</p>
+                        </div>
+                     </div>
+                   ))}
+                </div>
+             </div>
+             <div className="flex-1 w-full">
+                <div className="relative rounded-3xl border border-white/10 bg-[#0d0d0d] p-4 shadow-2xl overflow-hidden group">
+                   <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                   <img 
+                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" 
+                    alt="Builder UI" 
+                    className="rounded-2xl border border-white/5 shadow-inner"
+                   />
+                   <div className="absolute bottom-10 left-10 right-10 p-6 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-primary">Live Assistant</span>
+                      </div>
+                      <p className="text-sm italic">"I've updated the hero section with a glassmorphism effect as requested."</p>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </section>
+  );
+}
+
+function LivePreview() {
+  return (
+    <section className="py-24 bg-primary/5 border-y border-white/5">
+       <div className="mx-auto max-w-4xl px-6 text-center">
+          <h2 className="text-4xl font-bold mb-6 italic">Ready to see it in action?</h2>
+          <p className="text-muted-foreground mb-10 max-w-xl mx-auto">Join thousands of creators who use Aryan AI Studio to launch their ideas faster than ever.</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+             <button className="h-14 px-8 rounded-2xl bg-primary text-primary-foreground font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all">Start Building Now</button>
+             <button className="h-14 px-8 rounded-2xl bg-white/5 border border-white/10 font-bold hover:bg-white/10 transition-all">View Showcase</button>
+          </div>
+       </div>
     </section>
   );
 }
@@ -446,79 +243,62 @@ function Pricing() {
   const plans = [
     {
       name: "Free",
-      description: "Try it without signing up",
       price: "₹0",
-      credits: "3 Tokens",
-      features: ["3 tokens total", "Create 1 site + a few edits", "Shareable preview links", "Projects sidebar"],
+      features: ["3 Design Tokens", "Multi-page Generation", "Live Share Links", "Projects Dashboard"],
+      cta: "Get Started",
     },
     {
       name: "Pro",
-      description: "For clients and daily work",
-      price: "₹999/mo",
-      credits: "20 Tokens / month",
+      price: "₹999",
+      period: "/month",
+      features: ["20 Design Tokens /mo", "Custom Subdomains", "Export Code", "Priority AI Engine", "Remove Branding"],
+      cta: "Upgrade to Pro",
       featured: true,
-      features: ["20 tokens/month", "Faster generation", "Priority updates", "Everything in Free"],
     },
   ];
 
   return (
-    <section id="pricing" className="border-t border-border/60 py-24 bg-secondary/5">
+    <section id="pricing" className="py-24 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 blur-[150px] rounded-full opacity-30 pointer-events-none" />
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center mb-16">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
-            Simple, transparent pricing
-          </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Start free, upgrade when ready
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Start with 3 tokens. Upgrade to Pro for 20 tokens every month.
-          </p>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Simple, powerful pricing.</h2>
+          <p className="text-muted-foreground">No hidden fees. Just creation.</p>
         </div>
-
-        <div className="grid gap-8 lg:grid-cols-2 lg:max-w-4xl lg:mx-auto">
-          {plans.map((p) => (
-            <div
-              key={p.name}
-              className={`relative rounded-3xl border p-8 shadow-sm transition-all hover:shadow-xl ${
-                p.featured
-                  ? "border-primary bg-background ring-1 ring-primary shadow-primary/10 scale-105 z-10"
-                  : "border-border bg-card"
-              }`}
-            >
+        <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
+          {plans.map((p, i) => (
+            <div key={i} className={cn(
+              "p-10 rounded-[40px] border transition-all duration-500",
+              p.featured 
+                ? "bg-white/[0.04] border-primary shadow-[0_0_40px_rgba(var(--primary),0.1)] scale-105 relative" 
+                : "bg-white/[0.02] border-white/5 hover:border-white/20"
+            )}>
               {p.featured && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[10px] font-bold uppercase text-primary-foreground shadow-lg">
-                  Most Popular
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-[10px] font-black uppercase text-primary-foreground">
+                  Recommended
                 </div>
               )}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold">{p.name}</h3>
-                <p className="mt-2 text-xs text-muted-foreground">{p.description}</p>
+              <h3 className="text-2xl font-bold mb-4">{p.name}</h3>
+              <div className="flex items-baseline gap-1 mb-8">
+                <span className="text-5xl font-black">{p.price}</span>
+                {p.period && <span className="text-muted-foreground">{p.period}</span>}
               </div>
-              <div className="mb-8">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">{p.price}</span>
-                </div>
-                <p className="mt-2 text-sm font-bold text-primary">{p.credits}</p>
-              </div>
-              <ul className="mb-8 space-y-4 text-sm">
-                {p.features.map((f) => (
-                  <li key={f} className="flex items-center gap-3">
-                    <Check className="h-4 w-4 text-emerald-500 shrink-0" />
+              <ul className="space-y-4 mb-10 text-sm">
+                {p.features.map((f, fi) => (
+                  <li key={fi} className="flex items-center gap-3">
+                    <Check className="h-4 w-4 text-primary" />
                     <span>{f}</span>
                   </li>
                 ))}
               </ul>
-              <a
-                href={p.featured ? "/pro" : "/build"}
-                className={`inline-flex w-full items-center justify-center rounded-xl py-3 text-sm font-semibold transition-all ${
-                  p.featured
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:scale-[1.02]"
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                }`}
-              >
-                {p.featured ? "Upgrade to Pro" : "Start Free"}
-              </a>
+              <button className={cn(
+                "w-full h-14 rounded-2xl font-bold transition-all",
+                p.featured 
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:scale-105" 
+                  : "bg-white/5 border border-white/10 hover:bg-white/10"
+              )}>
+                {p.cta}
+              </button>
             </div>
           ))}
         </div>
@@ -528,96 +308,26 @@ function Pricing() {
 }
 
 function FAQ() {
-  const faqs = [
-    {
-      q: "How do tokens work?",
-      a: "Each time you generate or update a website it uses 1 token. Free users get 3 tokens total. Pro users get 20 tokens every month.",
-    },
-    {
-      q: "Do I need to sign up?",
-      a: "No. You can generate as a guest and still get shareable preview links. You can upgrade to Pro anytime.",
-    },
-    {
-      q: "Can I share my generated site?",
-      a: "Yes. Every generated website gets a shareable link you can send to anyone to view in the browser.",
-    },
-    {
-      q: "Can I upgrade anytime?",
-      a: "Yes. Upgrade to Pro to unlock 20 tokens/month.",
-    },
-    {
-      q: "What payment methods are supported?",
-      a: "We support all major credit cards, PayPal, and various global payment providers through our secure checkout.",
-    },
-  ];
   return (
-    <section id="faq" className="border-t border-border/60 bg-background py-24">
-      <div className="mx-auto max-w-4xl px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Frequently Asked Questions
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Have other questions? Feel free to contact our support team.
-          </p>
-        </div>
-        <div className="space-y-4">
-          {faqs.map((f) => (
-            <details
-              key={f.q}
-              className="group rounded-2xl border border-border bg-card p-6 shadow-sm open:shadow-md transition-all"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
-                <span className="text-lg font-semibold">{f.q}</span>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border group-open:rotate-180 transition-transform">
-                  <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                </div>
-              </summary>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                {f.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FinalCTA() {
-  return (
-    <section className="py-24 bg-gradient-brand text-brand-foreground relative overflow-hidden">
-      <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" aria-hidden />
-      <div className="relative mx-auto max-w-4xl px-6 text-center">
-        <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-xs font-bold backdrop-blur-md">
-           <Sparkles className="h-4 w-4" /> Start your creative journey today
-        </div>
-        <h2 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
-          Ready to build a stunning website?
-        </h2>
-        <p className="text-xl opacity-90 mb-10 max-w-2xl mx-auto">
-          Create professional websites with our AI tools. Start free, no credit card required.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="/build"
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-bold text-primary shadow-xl transition-transform hover:scale-105"
-          >
-            Start for Free <ArrowRight className="h-5 w-5" />
-          </a>
-          <a
-            href="#templates"
-            className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-8 py-4 text-base font-bold text-white border border-white/20 backdrop-blur-md transition-all hover:bg-white/20"
-          >
-            View Templates
-          </a>
-        </div>
-        <div className="mt-12 flex flex-wrap justify-center gap-8 text-sm opacity-80">
-           <span className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-emerald-400" /> Live in 5 minutes</span>
-           <span className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-emerald-400" /> No credit card required</span>
-           <span className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-emerald-400" /> Cancel anytime</span>
-        </div>
-      </div>
+    <section className="py-24 border-t border-white/5">
+       <div className="mx-auto max-w-3xl px-6 text-center">
+          <h2 className="text-3xl font-bold mb-12">FAQ</h2>
+          <div className="space-y-4 text-left">
+             {[
+               { q: "How many websites can I build?", a: "With Free, you get 3 design tokens. Each generation or major update uses 1 token. Pro gives you 20 tokens every month." },
+               { q: "Can I use my own domain?", a: "Yes, Pro users can set up custom subdomains like yourname.aryanai.studio instantly." },
+               { q: "Can I export the code?", a: "Yes, Pro users can export the full React + Tailwind code to host it anywhere." }
+             ].map((item, i) => (
+               <details key={i} className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] group">
+                  <summary className="font-bold flex justify-between items-center cursor-pointer list-none">
+                     {item.q}
+                     <ChevronDown className="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+               </details>
+             ))}
+          </div>
+       </div>
     </section>
   );
 }

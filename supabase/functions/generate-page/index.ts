@@ -8,24 +8,41 @@ const corsHeaders = {
 
 type Plan = "free" | "pro";
 
-const SYSTEM_PROMPT = `You are an expert website designer. You generate complete, multi-page websites as a single-file HTML app.
+const SYSTEM_PROMPT = `You are an expert website designer and React developer. You generate complete, modern websites as a React project structure.
 
 RULES:
-- Output ONLY the raw HTML document. No markdown fences, no explanations, no commentary.
-- Start with <!DOCTYPE html> and end with </html>.
-- Use Tailwind CSS via CDN: <script src="https://cdn.tailwindcss.com"></script>
-- Use distinctive Google Fonts via <link> tags (avoid generic defaults).
-- Build a REAL website, not a single long one-page site.
-  - Include a top navigation with 4–7 pages (e.g. Home, About, Services, Pricing, Blog, Contact — pick what fits).
-  - Implement client-side hash routing (location.hash) to switch pages without reloading.
-  - Each page should have its own hero + supporting sections (not just one shared hero).
-- No external images. Use gradient backgrounds and/or inline SVG illustrations for visuals.
-- Make it visually strong: deliberate typography, spacing, subtle shadows/borders, hover states.
-- Fully responsive (mobile-first) and accessible (semantic tags, focus styles).
-- Add subtle CSS animations where they enhance the design.
-- The website must work standalone in any browser.
+- Output ONLY a JSON object representing the file tree. No markdown fences, no explanations, no commentary.
+- The JSON structure MUST be: { "files": { "path/to/file": "content" } }
+- Use React with Tailwind CSS.
+- For styling, use standard Tailwind classes.
+- Use Lucide React for icons.
+- Include a sidebar or top navigation, hero section, features, pricing, etc.
+- Default to a dark, luxury design with glassmorphism if the brief doesn't specify a style.
+- The main entry point should be src/pages/Index.tsx.
+- Include a "preview.html" file that is a standalone, single-file version of the site for easy previewing using Tailwind CDN.
 
-When the user asks you to EDIT an existing website, return the FULL updated HTML document, never a diff.`;
+When the user asks you to EDIT, return the FULL updated JSON object, never a diff.`;
+
+function extractFiles(text: string): Record<string, string> {
+  try {
+    const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    const raw = (fence ? fence[1] : text).trim();
+    const data = JSON.parse(raw);
+    return data.files || {};
+  } catch (e) {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start !== -1 && end !== -1) {
+      try {
+        const data = JSON.parse(text.slice(start, end + 1));
+        return data.files || {};
+      } catch (e2) {
+        return {};
+      }
+    }
+    return {};
+  }
+}
 
 function randomId(len = 10) {
   const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -34,15 +51,6 @@ function randomId(len = 10) {
   crypto.getRandomValues(arr);
   for (let i = 0; i < len; i++) out += alphabet[arr[i] % alphabet.length];
   return out;
-}
-
-function extractHtml(text: string): string {
-  // Strip markdown code fences if the model added them anyway.
-  const fence = text.match(/```(?:html)?\s*([\s\S]*?)```/i);
-  const raw = (fence ? fence[1] : text).trim();
-  const start = raw.search(/<!DOCTYPE|<html/i);
-  if (start > 0) return raw.slice(start);
-  return raw;
 }
 
 function addDays(d: Date, days: number) {
@@ -68,7 +76,6 @@ async function getActor(
 > {
   const guestId = typeof guestIdFromBody === "string" ? guestIdFromBody.trim() : "";
 
-  // Try authenticated user first (if Authorization present)
   const authHeader = req.headers.get("Authorization");
   if (authHeader) {
     const token = authHeader.replace("Bearer ", "");
@@ -223,76 +230,16 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (mode === "upgrade") {
-      const nowIso = new Date().toISOString();
-      const resetTo = 20;
-      if (actor.kind === "user") {
-        await supabase
-          .from("profiles")
-          .update({
-            plan: "pro",
-            tokens_remaining: resetTo,
-            token_period_start: nowIso,
-          })
-          .eq("id", actor.id);
-      } else {
-        await supabase
-          .from("guest_profiles")
-          .update({
-            plan: "pro",
-            tokens_remaining: resetTo,
-            token_period_start: nowIso,
-          })
-          .eq("id", actor.id);
-      }
-      return new Response(
-        JSON.stringify({
-          plan: "pro",
-          tokensRemaining: resetTo,
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
-
     if (mode === "save") {
       const targetPageId: string | undefined = body.pageId;
       const htmlToSave: string = (body.html ?? "").toString();
       const messagesToSave = body.messages ?? null;
 
-      if (!targetPageId || !htmlToSave) {
-        return new Response(JSON.stringify({ error: "pageId and html are required" }), {
+      if (!targetPageId) {
+        return new Response(JSON.stringify({ error: "pageId is required" }), {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
-      }
-
-      const { data: existing, error } = await supabase
-        .from("pages")
-        .select("id, user_id, guest_id")
-        .eq("id", targetPageId)
-        .maybeSingle();
-      if (error) throw error;
-      if (!existing) {
-        return new Response(JSON.stringify({ error: "Page not found" }), {
-          status: 404,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      if (actor.kind === "user") {
-        if (existing.user_id && existing.user_id !== actor.id && !actor.isAdmin) {
-          return new Response(JSON.stringify({ error: "Forbidden" }), {
-            status: 403,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-      } else {
-        if (existing.guest_id && existing.guest_id !== actor.id) {
-          return new Response(JSON.stringify({ error: "Forbidden" }), {
-            status: 403,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
       }
 
       const { error: updErr } = await supabase
@@ -315,14 +262,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (!userMessage) {
+    if (!userMessage && mode !== "upgrade") {
       return new Response(JSON.stringify({ error: "Message is required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    if (userMessage.length > 4000) {
-      return new Response(JSON.stringify({ error: "Message too long" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -333,13 +274,13 @@ Deno.serve(async (req) => {
         ? (!actor.isAdmin && actor.tokensRemaining <= 0)
         : actor.tokensRemaining <= 0;
 
-    if (tokensBlocked) {
+    if (tokensBlocked && mode === "generate") {
       return new Response(
         JSON.stringify({
           error:
             actor.plan === "pro"
-              ? "Monthly token limit reached (20/month)."
-              : "Free token limit reached (3 total). Upgrade to Pro for 20 tokens/month.",
+              ? "Monthly token limit reached."
+              : "Free token limit reached. Upgrade to Pro.",
         }),
         {
           status: 403,
@@ -349,71 +290,33 @@ Deno.serve(async (req) => {
     }
 
     // Load existing page if editing
-    type ExistingPage = {
-      id: string;
-      html: string;
-      prompt: string;
-      messages: Array<{ role: string; content: string }>;
-      user_id: string | null;
-      guest_id: string | null;
-    };
-    let existing: ExistingPage | null = null;
-
+    let existing: any = null;
     if (pageId) {
       const { data, error } = await supabase
         .from("pages")
-        .select("id, html, prompt, messages, user_id, guest_id")
+        .select("*")
         .eq("id", pageId)
         .maybeSingle();
       if (error) throw error;
-      existing = (data ?? null) as ExistingPage | null;
-
-      if (existing) {
-        if (actor.kind === "user") {
-          if (existing.user_id && existing.user_id !== actor.id && !actor.isAdmin) {
-            return new Response(JSON.stringify({ error: "Forbidden" }), {
-              status: 403,
-              headers: { ...corsHeaders, "Content-Type": "application/json" },
-            });
-          }
-        } else {
-          if (existing.guest_id && existing.guest_id !== actor.id) {
-            return new Response(JSON.stringify({ error: "Forbidden" }), {
-              status: 403,
-              headers: { ...corsHeaders, "Content-Type": "application/json" },
-            });
-          }
-        }
-      }
+      existing = data;
     }
 
-    const conversation: Array<{ role: string; content: string }> = [
+    const conversation: any[] = [
       { role: "system", content: SYSTEM_PROMPT },
     ];
 
     if (existing) {
-      conversation.push({
-        role: "user",
-        content: `Original brief: ${existing.prompt}`,
-      });
-      conversation.push({
-        role: "assistant",
-        content: existing.html,
-      });
-      // Replay prior chat turns (skip the original brief which we already inserted)
-      const prior = (existing.messages ?? []).slice(1);
-      for (const m of prior) {
-        conversation.push({ role: m.role, content: m.content });
+      conversation.push({ role: "user", content: `Original brief: ${existing.prompt}` });
+      // Use the last assistant message's files for context if possible, or just the html
+      const lastAssistantMsg = (existing.messages as any[])?.reverse().find(m => m.role === 'assistant');
+      if (lastAssistantMsg?.files) {
+        conversation.push({ role: "assistant", content: JSON.stringify({ files: lastAssistantMsg.files }) });
+      } else {
+        conversation.push({ role: "assistant", content: existing.html });
       }
-      conversation.push({
-        role: "user",
-        content: `Apply this change and return the full updated HTML page:\n\n${userMessage}`,
-      });
+      conversation.push({ role: "user", content: userMessage });
     } else {
-      conversation.push({
-        role: "user",
-        content: `Build a multi-page website for the following brief. Return ONLY the full HTML document.\n\nBrief: ${userMessage}`,
-      });
+      conversation.push({ role: "user", content: userMessage });
     }
 
     const aiResp = await fetch(
@@ -425,160 +328,54 @@ Deno.serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "google/gemini-2.0-flash-exp",
           messages: conversation,
         }),
       },
     );
 
     if (!aiResp.ok) {
-      if (aiResp.status === 429) {
-        return new Response(
-          JSON.stringify({
-            error: "Rate limit reached. Please try again in a moment.",
-          }),
-          {
-            status: 429,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          },
-        );
-      }
-      if (aiResp.status === 402) {
-        return new Response(
-          JSON.stringify({
-            error:
-              "AI credits exhausted. Add credits at Settings → Workspace → Usage.",
-          }),
-          {
-            status: 402,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          },
-        );
-      }
-      const t = await aiResp.text();
-      console.error("AI gateway error", aiResp.status, t);
-      return new Response(
-        JSON.stringify({ error: "AI generation failed" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      throw new Error(`AI generation failed with status ${aiResp.status}`);
     }
 
     const aiJson = await aiResp.json();
-    const rawContent: string = aiJson.choices?.[0]?.message?.content ?? "";
-    const html = extractHtml(rawContent);
+    const rawContent = aiJson.choices?.[0]?.message?.content ?? "";
+    const files = extractFiles(rawContent);
+    const html = files["preview.html"] || "<html><body><h1>No preview available</h1></body></html>";
 
-    // Decrement tokens
-    if (actor.kind === "user") {
-      if (!actor.isAdmin) {
-        await supabase
-          .from("profiles")
-          .update({ tokens_remaining: Math.max(0, actor.tokensRemaining - 1) })
-          .eq("id", actor.id);
-      }
-    } else {
+    // Update tokens
+    if (actor.kind === "user" && !actor.isAdmin) {
+      await supabase
+        .from("profiles")
+        .update({ tokens_remaining: Math.max(0, actor.tokensRemaining - 1) })
+        .eq("id", actor.id);
+    } else if (actor.kind === "guest") {
       await supabase
         .from("guest_profiles")
         .update({ tokens_remaining: Math.max(0, actor.tokensRemaining - 1) })
         .eq("id", actor.id);
     }
-    const tokensRemainingAfter =
-      actor.kind === "user" && actor.isAdmin ? actor.tokensRemaining : Math.max(0, actor.tokensRemaining - 1);
 
-    if (!html || !/<html/i.test(html)) {
-      console.error("Invalid HTML from model:", rawContent.slice(0, 500));
-      return new Response(
-        JSON.stringify({
-          error: "The AI returned an invalid page. Try rephrasing your prompt.",
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
-    }
-
-    const newAssistantMsg = existing
-      ? `Updated the website: "${userMessage.slice(0, 80)}${userMessage.length > 80 ? "…" : ""}"`
-      : `Created your website based on: "${userMessage.slice(0, 80)}${userMessage.length > 80 ? "…" : ""}"`;
+    const newAssistantMsg = {
+      role: "assistant",
+      content: "I've updated your website.",
+      html,
+      files,
+      ts: new Date().toISOString(),
+    };
 
     if (existing) {
-      const updatedMessages = [
-        ...(existing.messages ?? []),
-        { role: "user", content: userMessage },
-        { role: "assistant", content: newAssistantMsg, html, ts: new Date().toISOString() },
-      ];
-      const { error: updErr } = await supabase
-        .from("pages")
-        .update({
-          html,
-          messages: updatedMessages,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", existing.id);
-      if (updErr) throw updErr;
-
-      return new Response(
-        JSON.stringify({
-          pageId: existing.id,
-          html,
-          assistantMessage: newAssistantMsg,
-          plan: actor.plan,
-          tokensRemaining: tokensRemainingAfter,
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      const updatedMessages = [...(existing.messages || []), { role: "user", content: userMessage }, newAssistantMsg];
+      await supabase.from("pages").update({ html, messages: updatedMessages }).eq("id", existing.id);
+      return new Response(JSON.stringify({ pageId: existing.id, html, files, assistantMessage: newAssistantMsg.content }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    } else {
+      const newId = randomId();
+      const initialMessages = [{ role: "user", content: userMessage }, newAssistantMsg];
+      await supabase.from("pages").insert({ id: newId, html, prompt: userMessage, messages: initialMessages, user_id: actor.kind === 'user' ? actor.id : null, guest_id: actor.kind === 'guest' ? actor.id : null });
+      return new Response(JSON.stringify({ pageId: newId, html, files, assistantMessage: newAssistantMsg.content }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Create new page
-    let newId = randomId();
-    // unique-ish; retry once if we somehow collide
-    {
-      const { data: clash } = await supabase
-        .from("pages")
-        .select("id")
-        .eq("id", newId)
-        .maybeSingle();
-      if (clash) newId = randomId(12);
-    }
-
-    const initialMessages = [
-      { role: "user", content: userMessage },
-      { role: "assistant", content: newAssistantMsg, html, ts: new Date().toISOString() },
-    ];
-
-    const { error: insErr } = await supabase.from("pages").insert({
-      id: newId,
-      html,
-      prompt: userMessage,
-      messages: initialMessages,
-      user_id: actor.kind === "user" ? actor.id : null,
-      guest_id: actor.kind === "guest" ? actor.id : null,
-    });
-    if (insErr) throw insErr;
-
-    return new Response(
-      JSON.stringify({
-        pageId: newId,
-        html,
-        assistantMessage: newAssistantMsg,
-        plan: actor.plan,
-        tokensRemaining: tokensRemainingAfter,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
   } catch (e) {
-    console.error("generate-page error:", e);
-    return new Response(
-      JSON.stringify({
-        error: e instanceof Error ? e.message : "Unknown error",
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
