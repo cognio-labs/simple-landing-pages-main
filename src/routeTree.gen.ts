@@ -70,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/build': typeof BuildRoute
   '/connectors': typeof ConnectorsRoute
+  '/dashboard': typeof DashboardRoute
   '/pro': typeof ProRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
@@ -80,6 +81,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/build': typeof BuildRoute
   '/connectors': typeof ConnectorsRoute
+  '/dashboard': typeof DashboardRoute
   '/pro': typeof ProRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
@@ -91,6 +93,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/build': typeof BuildRoute
   '/connectors': typeof ConnectorsRoute
+  '/dashboard': typeof DashboardRoute
   '/pro': typeof ProRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
@@ -103,6 +106,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/build'
     | '/connectors'
+    | '/dashboard'
     | '/pro'
     | '/resources'
     | '/settings'
@@ -113,6 +117,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/build'
     | '/connectors'
+    | '/dashboard'
     | '/pro'
     | '/resources'
     | '/settings'
@@ -123,6 +128,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/build'
     | '/connectors'
+    | '/dashboard'
     | '/pro'
     | '/resources'
     | '/settings'
@@ -134,6 +140,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuildRoute: typeof BuildRoute
   ConnectorsRoute: typeof ConnectorsRoute
+  DashboardRoute: typeof DashboardRoute
   ProRoute: typeof ProRoute
   ResourcesRoute: typeof ResourcesRoute
   SettingsRoute: typeof SettingsRoute
@@ -161,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/pro'
       fullPath: '/pro'
       preLoaderRoute: typeof ProRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/connectors': {
@@ -206,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuildRoute: BuildRoute,
   ConnectorsRoute: ConnectorsRoute,
+  DashboardRoute: DashboardRoute,
   ProRoute: ProRoute,
   ResourcesRoute: ResourcesRoute,
   SettingsRoute: SettingsRoute,
