@@ -57,6 +57,9 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground lg:flex">
+          <Link to={"/dashboard" as any} className="transition-colors hover:text-foreground">
+            Dashboard
+          </Link>
           <a href="#how" className="transition-colors hover:text-foreground">
             How it works
           </a>
@@ -68,6 +71,9 @@ export function SiteHeader() {
           </a>
           <Link to={"/pro" as any} className="transition-colors hover:text-foreground">
             Pricing
+          </Link>
+          <Link to={"/resources" as any} className="transition-colors hover:text-foreground">
+            Resources
           </Link>
           <a href="#faq" className="transition-colors hover:text-foreground">
             FAQ
@@ -99,6 +105,12 @@ export function SiteHeader() {
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 font-bold text-white text-xs">
                   {session.user.email?.[0].toUpperCase() || "U"}
                 </div>
+                <Link
+                  to="/dashboard"
+                  className="hidden sm:inline-flex h-9 items-center gap-2 rounded-full border border-border bg-background px-4 text-xs font-semibold text-foreground hover:bg-accent lg:flex"
+                >
+                  Dashboard
+                </Link>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -116,12 +128,20 @@ export function SiteHeader() {
                 </Link>
               </div>
             ) : (
-              <Link
-                to="/build"
-                className="inline-flex h-9 items-center gap-2 rounded-full bg-gradient-brand px-6 text-xs font-semibold text-brand-foreground shadow-md transition-transform hover:scale-[1.03]"
-              >
-                Start building
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/auth"
+                  className="hidden sm:inline-flex h-9 items-center gap-2 rounded-full border border-border bg-background px-5 text-xs font-semibold text-foreground hover:bg-accent"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  to="/build"
+                  className="inline-flex h-9 items-center gap-2 rounded-full bg-gradient-brand px-6 text-xs font-semibold text-brand-foreground shadow-md transition-transform hover:scale-[1.03]"
+                >
+                  Start building
+                </Link>
+              </div>
             )}
           </div>
         </div>
@@ -129,4 +149,3 @@ export function SiteHeader() {
     </header>
   );
 }
-

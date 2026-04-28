@@ -1,12 +1,7 @@
 import { 
-  Home, 
-  Search, 
   Layers, 
   Link2, 
   Folder, 
-  Star, 
-  User, 
-  Share2, 
   Settings,
   Plus,
   ChevronDown
@@ -23,10 +18,10 @@ export function AppSidebar() {
   const [projects, setProjects] = useState<Array<{ id: string; prompt: string; created_at: string }>>([]);
   
   const mainItems = [
-    { icon: Home, label: "Home", href: "/" },
-    { icon: Search, label: "Search", href: "#", kbd: "Ctrl K" },
+    { icon: Folder, label: "Dashboard", href: "/dashboard" },
+    { icon: Plus, label: "New page", href: "/build" },
     { icon: Layers, label: "Resources", href: "/resources" },
-    { icon: Link2, label: "Connectors", href: "#" },
+    { icon: Link2, label: "Connectors", href: "/connectors" },
   ];
 
   useEffect(() => {
@@ -90,10 +85,10 @@ export function AppSidebar() {
           </div>
           <div className="space-y-1">
             <Link
-              to={"/build" as any}
+              to={"/dashboard" as any}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-                location.pathname === "/build"
+                location.pathname === "/dashboard"
                   ? "bg-accent text-foreground font-medium"
                   : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
               )}
@@ -127,10 +122,18 @@ export function AppSidebar() {
       </div>
 
       <div className="mt-auto p-4 border-t border-border">
-         <button className="flex items-center gap-3 w-full px-3 py-2 text-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground rounded-lg transition-colors">
-            <Settings className="h-4 w-4" />
-            Settings
-         </button>
+         <Link
+           to={"/settings" as any}
+           className={cn(
+             "flex items-center gap-3 w-full px-3 py-2 text-sm rounded-lg transition-colors",
+             location.pathname === "/settings"
+               ? "bg-accent text-foreground font-medium"
+               : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+           )}
+         >
+           <Settings className="h-4 w-4" />
+           Settings
+         </Link>
       </div>
     </aside>
   );

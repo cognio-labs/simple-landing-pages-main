@@ -9,19 +9,49 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ProRouteImport } from './routes/pro'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ConnectorsRouteImport } from './routes/connectors'
 import { Route as BuildRouteImport } from './routes/build'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PPageIdRouteImport } from './routes/p.$pageId'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProRoute = ProRouteImport.update({
   id: '/pro',
   path: '/pro',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnectorsRoute = ConnectorsRouteImport.update({
+  id: '/connectors',
+  path: '/connectors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuildRoute = BuildRouteImport.update({
   id: '/build',
   path: '/build',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,40 +67,102 @@ const PPageIdRoute = PPageIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/build': typeof BuildRoute
+  '/connectors': typeof ConnectorsRoute
+  '/dashboard': typeof DashboardRoute
   '/pro': typeof ProRoute
+  '/resources': typeof ResourcesRoute
+  '/settings': typeof SettingsRoute
   '/p/$pageId': typeof PPageIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/build': typeof BuildRoute
+  '/connectors': typeof ConnectorsRoute
+  '/dashboard': typeof DashboardRoute
   '/pro': typeof ProRoute
+  '/resources': typeof ResourcesRoute
+  '/settings': typeof SettingsRoute
   '/p/$pageId': typeof PPageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/build': typeof BuildRoute
+  '/connectors': typeof ConnectorsRoute
+  '/dashboard': typeof DashboardRoute
   '/pro': typeof ProRoute
+  '/resources': typeof ResourcesRoute
+  '/settings': typeof SettingsRoute
   '/p/$pageId': typeof PPageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/build' | '/pro' | '/p/$pageId'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/build'
+    | '/connectors'
+    | '/dashboard'
+    | '/pro'
+    | '/resources'
+    | '/settings'
+    | '/p/$pageId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/build' | '/pro' | '/p/$pageId'
-  id: '__root__' | '/' | '/build' | '/pro' | '/p/$pageId'
+  to:
+    | '/'
+    | '/auth'
+    | '/build'
+    | '/connectors'
+    | '/dashboard'
+    | '/pro'
+    | '/resources'
+    | '/settings'
+    | '/p/$pageId'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/build'
+    | '/connectors'
+    | '/dashboard'
+    | '/pro'
+    | '/resources'
+    | '/settings'
+    | '/p/$pageId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   BuildRoute: typeof BuildRoute
+  ConnectorsRoute: typeof ConnectorsRoute
+  DashboardRoute: typeof DashboardRoute
   ProRoute: typeof ProRoute
+  ResourcesRoute: typeof ResourcesRoute
+  SettingsRoute: typeof SettingsRoute
   PPageIdRoute: typeof PPageIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pro': {
       id: '/pro'
       path: '/pro'
@@ -78,11 +170,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connectors': {
+      id: '/connectors'
+      path: '/connectors'
+      fullPath: '/connectors'
+      preLoaderRoute: typeof ConnectorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/build': {
       id: '/build'
       path: '/build'
       fullPath: '/build'
       preLoaderRoute: typeof BuildRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -104,8 +217,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   BuildRoute: BuildRoute,
+  ConnectorsRoute: ConnectorsRoute,
+  DashboardRoute: DashboardRoute,
   ProRoute: ProRoute,
+  ResourcesRoute: ResourcesRoute,
+  SettingsRoute: SettingsRoute,
   PPageIdRoute: PPageIdRoute,
 }
 export const routeTree = rootRouteImport

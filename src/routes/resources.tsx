@@ -21,6 +21,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 
+
+export const Route = createFileRoute("/resources")({
   head: () => ({
     meta: [
       { title: "Best Website Builders 2026 · PagePilot AI" },
@@ -30,6 +32,8 @@ import { Button } from "@/components/ui/button";
       },
     ],
   }),
+  component: ResourcesPage,
+});
 
 function ResourcesPage() {
   const categories = [
