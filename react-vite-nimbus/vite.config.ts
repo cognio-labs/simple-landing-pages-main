@@ -4,5 +4,5 @@ import { defineConfig } from 'vite'
 // cause esbuild to error when bundling the config. If your Node environment
 // supports ESM and you prefer the plugin, re-add it (or upgrade Node).
 export default defineConfig({
-  server: { port: 5173 }
+  server: { port: 8080 }
 })
