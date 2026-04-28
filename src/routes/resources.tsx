@@ -28,7 +28,7 @@ export const Route = createFileRoute("/resources")({
       { title: "Best Website Builders 2026 · PagePilot AI" },
       {
         name: "description",
-        content: "Explore the best AI landing page and website builders curated by PagePilot AI.",
+        content: "Explore the best AI website builders curated by PagePilot AI.",
       },
     ],
   }),
@@ -46,8 +46,8 @@ function ResourcesPage() {
   const tools = [
     {
       category: "ai",
-      name: "Landing Page AI Builder",
-      description: "Write a prompt and get a full landing page ready with HTML export.",
+      name: "AI Website Builder",
+      description: "Write a prompt and get a full website ready with HTML export.",
       features: ["Prompt to Page", "HTML Export", "Instant Styling"],
       link: "https://landing-page.io",
       badge: "Lovable Style",
@@ -56,7 +56,7 @@ function ResourcesPage() {
     {
       category: "ai",
       name: "HubSpot Campaign Assistant",
-      description: "Free AI tool that generates both copy and landing pages for your campaigns.",
+      description: "Free AI tool that generates copy and web pages for your campaigns.",
       features: ["Free AI", "Copywriting", "HubSpot Integrated"],
       link: "https://www.hubspot.com/campaign-assistant",
       color: "from-orange-500 to-red-600"
@@ -64,7 +64,7 @@ function ResourcesPage() {
     {
       category: "ai",
       name: "Leadpages AI Builder",
-      description: "Generate AI landing pages in 60 seconds with built-in A/B testing.",
+      description: "Generate conversion-focused pages in 60 seconds with built-in A/B testing.",
       features: ["60s Generation", "A/B Testing", "High Conversion"],
       link: "https://www.leadpages.com",
       color: "from-purple-500 to-pink-600"
@@ -113,7 +113,7 @@ function ResourcesPage() {
     {
       category: "marketing",
       name: "Unbounce",
-      description: "High-converting landing pages optimized specifically for marketing and ads.",
+      description: "High-converting pages optimized specifically for marketing and ads.",
       features: ["Conversion Focus", "Smart Traffic", "Ad Integration"],
       link: "https://unbounce.com",
       color: "from-blue-600 to-indigo-700"
@@ -121,7 +121,7 @@ function ResourcesPage() {
     {
       category: "marketing",
       name: "Instapage",
-      description: "Fast, premium landing pages with advanced personalization features.",
+      description: "Fast, premium pages with advanced personalization features.",
       features: ["Personalization", "Speed Boost", "Team Collaboration"],
       link: "https://instapage.com",
       color: "from-blue-500 to-cyan-500"
@@ -129,7 +129,7 @@ function ResourcesPage() {
     {
       category: "marketing",
       name: "Landingi",
-      description: "Beginner-friendly landing page builder with a strong set of conversion tools.",
+      description: "Beginner-friendly builder with a strong set of conversion tools.",
       features: ["Beginner Friendly", "Marketing Automation", "Drag & Drop"],
       link: "https://landingi.com",
       color: "from-emerald-500 to-teal-600"
@@ -137,7 +137,7 @@ function ResourcesPage() {
     {
       category: "marketing",
       name: "GetResponse",
-      description: "Powerful combo of landing page builder and email marketing automation.",
+      description: "Powerful combo of page builder and email marketing automation.",
       features: ["Email Marketing", "Marketing Funnels", "Integrated Ads"],
       link: "https://www.getresponse.com",
       color: "from-blue-500 to-blue-700"
@@ -145,7 +145,7 @@ function ResourcesPage() {
     {
       category: "advanced",
       name: "Framer AI",
-      description: "Modern SaaS landing pages with React-style design and animations.",
+      description: "Modern SaaS websites with React-style design and animations.",
       features: ["React Design", "Stunning Animations", "High Performance"],
       link: "https://www.framer.com/ai",
       badge: "Modern",
@@ -290,7 +290,7 @@ function ResourcesPage() {
                    <ul className="space-y-4">
                       <li className="flex items-center justify-between">
                         <span className="text-sm font-semibold">Best Choice</span>
-                        <span className="text-xs bg-primary/20 text-primary px-3 py-1 rounded-full border border-primary/30">Landing-page.io</span>
+                        <span className="text-xs bg-primary/20 text-primary px-3 py-1 rounded-full border border-primary/30">Website Builder</span>
                       </li>
                       <li className="flex items-center justify-between">
                         <span className="text-sm font-semibold">Premium Feel</span>

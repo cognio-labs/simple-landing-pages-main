@@ -65,7 +65,7 @@ export function VersionsSidebar({ versions, activeIndex, onRevert, open }: Props
                <History className="h-5 w-5" />
             </div>
             <p className="text-xs text-muted-foreground">
-              No versions yet. Start chatting to create your first landing page!
+              No versions yet. Start chatting to create your first website!
             </p>
           </div>
         ) : (

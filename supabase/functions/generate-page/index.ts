@@ -15,7 +15,7 @@ RULES:
 - Start with <!DOCTYPE html> and end with </html>.
 - Use Tailwind CSS via CDN: <script src="https://cdn.tailwindcss.com"></script>
 - Use distinctive Google Fonts via <link> tags (avoid generic defaults).
-- Build a REAL website, not a single long landing page.
+- Build a REAL website, not a single long one-page site.
   - Include a top navigation with 4–7 pages (e.g. Home, About, Services, Pricing, Blog, Contact — pick what fits).
   - Implement client-side hash routing (location.hash) to switch pages without reloading.
   - Each page should have its own hero + supporting sections (not just one shared hero).

@@ -18,17 +18,17 @@ import { SiteFooter } from "@/components/site-footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PagePilot AI — Build High-Converting Landing Pages in Seconds with AI" },
+      { title: "PagePilot AI — Build Beautiful Websites in Seconds with AI" },
       {
         name: "description",
         content:
-          "Create, customize, and launch beautiful landing pages — no coding needed. PagePilot AI generates complete pages instantly.",
+          "Create, customize, and launch beautiful multi-page websites — no coding needed. PagePilot AI generates complete sites instantly.",
       },
-      { property: "og:title", content: "PagePilot AI — AI Landing Page Builder" },
+      { property: "og:title", content: "PagePilot AI — AI Website Builder" },
       {
         property: "og:description",
         content:
-          "Build High-Converting Landing Pages in Seconds with AI. Create, customize, and launch beautiful pages instantly.",
+          "Build beautiful multi-page websites in seconds with AI. Create, customize, and launch complete sites instantly.",
       },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -74,11 +74,11 @@ function Hero() {
         </div>
 
         <h1 className="max-w-4xl text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-          Build <span className="text-gradient-brand">High-Converting</span> Landing Pages in Seconds with AI
+          Build <span className="text-gradient-brand">Beautiful</span> Websites in Seconds with AI
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Create, customize, and launch beautiful landing pages — no coding needed.
+          Create, customize, and launch beautiful multi-page websites — no coding needed.
         </p>
 
         <form
@@ -89,14 +89,14 @@ function Hero() {
             <input
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="A landing page for a meditation app for busy parents…"
+              placeholder="A website for a meditation app for busy parents…"
               className="flex-1 rounded-xl bg-transparent px-4 py-3 text-base outline-none placeholder:text-muted-foreground/70"
             />
             <button
               type="submit"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-brand px-6 py-3 text-sm font-semibold text-brand-foreground shadow-md shadow-primary/30 transition-transform hover:scale-[1.02]"
             >
-              Generate page
+              Generate website
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -132,8 +132,8 @@ function Steps() {
     },
     {
       icon: Sparkles,
-      title: "AI builds the page",
-      body: "Headlines, sections, layout and visuals — generated in seconds, ready to ship.",
+      title: "AI builds the website",
+      body: "Navigation, pages, sections, layout and visuals — generated in seconds, ready to ship.",
     },
     {
       icon: Rocket,
@@ -149,7 +149,7 @@ function Steps() {
             How it works
           </p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-            From idea to live page in 3 steps
+            From idea to live website in 3 steps
           </h2>
         </div>
 
@@ -183,56 +183,64 @@ function Templates() {
       body: "Announce your new SaaS with crisp benefits, screenshots, and clear CTAs.",
       image:
         "https://images.unsplash.com/photo-1556155092-8707de31f9c4?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/saas-product-launch",
+      prompt:
+        "A multi-page website for a SaaS product launch. Include Home, Features, Pricing, FAQ, and Contact. Modern, clean, and conversion-focused.",
     },
     {
       title: "Mobile App Preorder",
       body: "Tease features, collect emails, and drive early installs with urgency.",
       image:
         "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/mobile-app-preorder",
+      prompt:
+        "A multi-page website for a mobile app launch. Include Home, Features, Roadmap, Testimonials, and Contact. Energetic and modern.",
     },
     {
       title: "E-commerce Drop",
       body: "Spotlight a limited-run product drop with countdown and fast checkout.",
       image:
         "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/ecommerce-product-drop",
+      prompt:
+        "A multi-page website for a limited-run e-commerce drop. Include Home, Products, About, Shipping & Returns, and Contact. Bold and premium.",
     },
     {
       title: "Fintech Demo Booking",
       body: "Explain compliance-aware value props and convert traffic into demo calls.",
       image:
         "https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/fintech-demo-booking",
+      prompt:
+        "A multi-page website for a fintech product. Include Home, Security, Use Cases, Pricing, and Book a Demo. Trustworthy and crisp.",
     },
     {
       title: "Healthcare Clinic Lead Gen",
       body: "Educate patients and capture inquiries with HIPAA-friendly structure.",
       image:
         "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/healthcare-clinic-lead-gen",
+      prompt:
+        "A multi-page website for a healthcare clinic. Include Home, Services, Doctors, Insurance, and Contact. Calm, accessible, and reassuring.",
     },
     {
       title: "Online Course Launch",
       body: "Sell an instructor-led or self-paced course with outcomes and modules.",
       image:
         "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/online-course-launch",
+      prompt:
+        "A multi-page website for an online course. Include Home, Curriculum, Instructor, Pricing, and FAQ. Clear, structured, and motivating.",
     },
     {
       title: "Webinar Registration",
       body: "Convert visitors with agenda, speakers, schedule, and reminders.",
       image:
         "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/webinar-registration",
+      prompt:
+        "A multi-page website for a webinar. Include Home, Agenda, Speakers, Register, and FAQ. Simple, focused, and modern.",
     },
     {
       title: "Real Estate Property Lead Gen",
       body: "Showcase listings with highlights, neighborhood, and tour request CTA.",
       image:
         "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
-      url: "https://landing-page.io/preview/real-estate-property-lead-gen",
+      prompt:
+        "A multi-page website for a real estate listing. Include Home, Gallery, Neighborhood, Amenities, and Book a Tour. Luxury editorial style.",
     },
   ];
 
@@ -253,12 +261,11 @@ function Templates() {
         
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {templates.map((t) => (
-            <a
+            <button
               key={t.title}
-              href={t.url}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              type="button"
+              onClick={() => navigate({ to: "/build", search: { prompt: t.prompt } })}
+              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition-all hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="aspect-video w-full bg-muted overflow-hidden">
                 <img
@@ -272,14 +279,18 @@ function Templates() {
                 <h3 className="font-semibold text-sm">{t.title}</h3>
                 <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{t.body}</p>
               </div>
-            </a>
+            </button>
           ))}
         </div>
         
         <div className="mt-12 text-center">
-          <a href="https://landing-page.io/templates" className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1">
-            Browse All Templates <ArrowRight className="h-4 w-4" />
-          </a>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/build" })}
+            className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
+          >
+            Generate a website <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </section>
@@ -291,8 +302,8 @@ function ConversionFeatures() {
     {
       tag: "Most Popular",
       icon: Rocket,
-      title: "Lightning-Fast Page Builder",
-      body: "With our AI landing page builder, you can create a professional landing page in just a few clicks. The system handles structure, layout, and responsive design automatically, so you never waste time on coding or complex setup. Whether you’re testing a marketing idea or launching a new product, you can go live in minutes instead of weeks.",
+      title: "Lightning-Fast Website Builder",
+      body: "With our AI website builder, you can create a professional multi-page website in just a few clicks. The system handles navigation, structure, layout, and responsive design automatically, so you never waste time on coding or complex setup. Whether you’re testing a marketing idea or launching a new product, you can go live in minutes instead of weeks.",
       cta: "Start Building Now",
       stat: "Launch in under 5 minutes",
       detail: "Fast, responsive layouts in minutes.",
@@ -303,7 +314,7 @@ function ConversionFeatures() {
       tag: "Editor's Choice",
       icon: Gauge,
       title: "AI-Powered Conversion Engine",
-      body: "Our ai landing page generator doesn’t just design pages—it optimizes them for performance. From crafting high-converting headlines to selecting persuasive call-to-action buttons, the AI uses proven conversion principles and real-time data to maximize engagement. This ensures every landing page is designed to capture leads and drive sales effortlessly.",
+      body: "Our AI website generator doesn’t just design pages—it optimizes them for performance. From crafting clear positioning to selecting persuasive call-to-action buttons, the AI uses proven conversion principles to maximize engagement. This ensures every page in your site is designed to capture leads and drive sales effortlessly.",
       cta: "Boost Conversions",
       stat: "3x higher engagement rates",
       detail: "Persuasion-first sections and CTAs.",
@@ -314,7 +325,7 @@ function ConversionFeatures() {
       tag: "New Feature",
       icon: Globe,
       title: "Free AI Website Builder",
-      body: "Building online presence shouldn’t be costly. With our free ai website builder, you can design, customize, and publish landing pages without paying upfront fees. Experiment with different campaigns, test audiences, and grow your business risk-free. When you’re ready to scale, the platform grows with you, offering advanced features as your needs expand.",
+      body: "Building your online presence shouldn’t be costly. With our free AI website builder, you can design, customize, and publish complete websites without paying upfront fees. Experiment with different ideas, test audiences, and grow your business risk-free. When you’re ready to scale, the platform grows with you.",
       cta: "Try for Free",
       stat: "$0 to get started",
       detail: "Start free with 3 tokens.",
@@ -356,19 +367,19 @@ function ConversionFeatures() {
             Smarter AI Landing Page Builder
           </h2>
           <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-            Our AI landing page builder gives you layouts and copy optimized for engagement, saving you hours of manual work.
+            Our AI website builder gives you layouts and copy optimized for engagement, saving you hours of manual work.
           </p>
         </div>
 
         <div className="grid gap-12 lg:grid-cols-2 items-center mb-24">
           <div className="space-y-6">
              <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10">
-                <h3 className="text-xl font-bold mb-2">AI Landing Pages in Minutes</h3>
-                <p className="text-muted-foreground text-sm">Generate a complete AI landing page from a simple idea—fast, professional, and ready to use.</p>
+                <h3 className="text-xl font-bold mb-2">Websites in Minutes</h3>
+                <p className="text-muted-foreground text-sm">Generate a complete multi-page website from a simple idea—fast, professional, and ready to use.</p>
              </div>
              <div className="p-6 rounded-2xl bg-secondary/5 border border-secondary/10">
                 <h3 className="text-xl font-bold mb-2">Powerful AI Landing Page Generator</h3>
-                <p className="text-muted-foreground text-sm">Use the AI landing page generator to create pages with headlines, visuals, and CTAs that drive higher conversions.</p>
+                <p className="text-muted-foreground text-sm">Use the AI website generator to create pages with strong headlines, visuals, and CTAs that drive higher conversions.</p>
              </div>
              <div className="p-6 rounded-2xl bg-accent/5 border border-accent/10">
                 <h3 className="text-xl font-bold mb-2">Free AI Website Builder Access</h3>
@@ -415,7 +426,7 @@ function ConversionFeatures() {
         <div className="mt-24 grid gap-8 md:grid-cols-3">
            <div className="text-center p-8 rounded-2xl border border-border bg-card">
               <h4 className="text-xl font-bold mb-3">Complete AI Website Builder Solution</h4>
-              <p className="text-sm text-muted-foreground">Beyond landing pages, our AI website builder helps you create full websites, including blogs, product pages, and multi-page sites.</p>
+              <p className="text-sm text-muted-foreground">Build full websites, including blogs, product pages, and multi-page sites—without writing code.</p>
            </div>
            <div className="text-center p-8 rounded-2xl border border-border bg-card">
               <h4 className="text-xl font-bold mb-3">Conversion-Optimized by Default</h4>
@@ -582,10 +593,10 @@ function FinalCTA() {
            <Sparkles className="h-4 w-4" /> Start your creative journey today
         </div>
         <h2 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
-          Ready to build stunning landing pages?
+          Ready to build a stunning website?
         </h2>
         <p className="text-xl opacity-90 mb-10 max-w-2xl mx-auto">
-          Create professional landing pages with our AI tools. Start free, no credit card required.
+          Create professional websites with our AI tools. Start free, no credit card required.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
