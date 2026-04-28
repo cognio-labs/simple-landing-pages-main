@@ -43,7 +43,6 @@ function IndexPage() {
       <main>
         <Hero />
         <Steps />
-        <StepsImage />
         <Templates />
         <ConversionFeatures />
         <Pricing />
@@ -176,69 +175,63 @@ function Steps() {
   );
 }
 
-function StepsImage() {
-  return (
-    <section className="pb-24 text-center">
-      <div className="mx-auto max-w-6xl px-6">
-        <img
-          src="/images/clipboard-1777114369567.png"
-          alt="AI Website Design: Build Professional Websites in Minutes"
-          className="mx-auto rounded-3xl border border-border shadow-2xl"
-        />
-      </div>
-    </section>
-  );
-}
-
 function Templates() {
   const navigate = useNavigate();
   const templates = [
     {
       title: "SaaS Product Launch",
       body: "Announce your new SaaS with crisp benefits, screenshots, and clear CTAs.",
-      image: "/images/templates/saas.png",
+      image:
+        "https://images.unsplash.com/photo-1556155092-8707de31f9c4?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/saas-product-launch",
     },
     {
       title: "Mobile App Preorder",
       body: "Tease features, collect emails, and drive early installs with urgency.",
-      image: "/images/templates/mobile.png",
+      image:
+        "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/mobile-app-preorder",
     },
     {
       title: "E-commerce Drop",
       body: "Spotlight a limited-run product drop with countdown and fast checkout.",
-      image: "/images/templates/ecommerce.png",
+      image:
+        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/ecommerce-product-drop",
     },
     {
       title: "Fintech Demo Booking",
       body: "Explain compliance-aware value props and convert traffic into demo calls.",
-      image: "/images/templates/fintech.png",
+      image:
+        "https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/fintech-demo-booking",
     },
     {
       title: "Healthcare Clinic Lead Gen",
       body: "Educate patients and capture inquiries with HIPAA-friendly structure.",
-      image: "/images/templates/healthcare.png",
+      image:
+        "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/healthcare-clinic-lead-gen",
     },
     {
       title: "Online Course Launch",
       body: "Sell an instructor-led or self-paced course with outcomes and modules.",
-      image: "/images/templates/course.png",
+      image:
+        "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/online-course-launch",
     },
     {
       title: "Webinar Registration",
       body: "Convert visitors with agenda, speakers, schedule, and reminders.",
-      image: "/images/templates/webinar.png",
+      image:
+        "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/webinar-registration",
     },
     {
       title: "Real Estate Property Lead Gen",
       body: "Showcase listings with highlights, neighborhood, and tour request CTA.",
-      image: "/images/templates/realestate.png",
+      image:
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
       url: "https://landing-page.io/preview/real-estate-property-lead-gen",
     },
   ];
@@ -258,14 +251,6 @@ function Templates() {
           </p>
         </div>
         
-        <div className="mt-16 text-center">
-           <img
-            src="/images/clipboard-1777114444264.png"
-            alt="Template selection grid"
-            className="mx-auto mb-12 rounded-2xl border border-border shadow-lg"
-          />
-        </div>
-
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {templates.map((t) => (
             <a
@@ -276,7 +261,12 @@ function Templates() {
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="aspect-video w-full bg-muted overflow-hidden">
-                <div className="h-full w-full bg-gradient-to-br from-primary/20 to-secondary/20 group-hover:scale-105 transition-transform" />
+                <img
+                  src={t.image}
+                  alt=""
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-sm">{t.title}</h3>
@@ -305,7 +295,9 @@ function ConversionFeatures() {
       body: "With our AI landing page builder, you can create a professional landing page in just a few clicks. The system handles structure, layout, and responsive design automatically, so you never waste time on coding or complex setup. Whether you’re testing a marketing idea or launching a new product, you can go live in minutes instead of weeks.",
       cta: "Start Building Now",
       stat: "Launch in under 5 minutes",
-      detail: "Laptop with 'Build in 5 mins' for fast page building."
+      detail: "Fast, responsive layouts in minutes.",
+      image:
+        "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=80",
     },
     {
       tag: "Editor's Choice",
@@ -314,7 +306,9 @@ function ConversionFeatures() {
       body: "Our ai landing page generator doesn’t just design pages—it optimizes them for performance. From crafting high-converting headlines to selecting persuasive call-to-action buttons, the AI uses proven conversion principles and real-time data to maximize engagement. This ensures every landing page is designed to capture leads and drive sales effortlessly.",
       cta: "Boost Conversions",
       stat: "3x higher engagement rates",
-      detail: "Tablet with '3x Higher Engagement' graph for AI conversion."
+      detail: "Persuasion-first sections and CTAs.",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=80",
     },
     {
       tag: "New Feature",
@@ -323,7 +317,9 @@ function ConversionFeatures() {
       body: "Building online presence shouldn’t be costly. With our free ai website builder, you can design, customize, and publish landing pages without paying upfront fees. Experiment with different campaigns, test audiences, and grow your business risk-free. When you’re ready to scale, the platform grows with you, offering advanced features as your needs expand.",
       cta: "Try for Free",
       stat: "$0 to get started",
-      detail: "$0 to get started"
+      detail: "Start free with 3 tokens.",
+      image:
+        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80",
     },
     {
       tag: "Pro Feature",
@@ -332,7 +328,9 @@ function ConversionFeatures() {
       body: "Go beyond simple pages with a full ai website builder that allows you to create entire websites, including product showcases, blogs, and multi-page funnels. Every page is fully optimized for SEO, mobile devices, and speed, ensuring your business stays competitive online. Perfect for startups, agencies, or entrepreneurs who want scalability from day one.",
       cta: "Build Full Sites",
       stat: "SEO and mobile ready",
-      detail: "Devices with 'SEO & Mobile Ready' sites for full AI building."
+      detail: "Multi-page foundations with SEO basics.",
+      image:
+        "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80",
     },
     {
       tag: "Creative Tool",
@@ -341,7 +339,9 @@ function ConversionFeatures() {
       body: "Create realistic fake websites and mockups in minutes. Perfect for presentations, client demos, portfolio showcases, or testing design concepts. Generate professional-looking dummy sites with authentic content, images, and layouts that look indistinguishable from real websites.",
       cta: "Create Fake Website!",
       stat: "100% Realistic",
-      detail: "Realistic fake websites and mockups"
+      detail: "Mockups for demos and pitches.",
+      image:
+        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1600&q=80",
     }
   ];
 
@@ -377,8 +377,8 @@ function ConversionFeatures() {
           </div>
           <div className="relative">
              <img
-              src="/images/clipboard-1777114960207.png"
-              alt="AI Design Features"
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80"
+              alt=""
               className="rounded-3xl shadow-2xl border border-border"
             />
           </div>
@@ -406,7 +406,7 @@ function ConversionFeatures() {
                 </div>
               </div>
               <div className="flex-1 w-full max-w-xl aspect-square bg-muted rounded-3xl flex items-center justify-center border border-border overflow-hidden">
-                 <div className="h-full w-full bg-gradient-to-br from-primary/10 via-background to-secondary/10" />
+                <img src={f.image} alt="" className="h-full w-full object-cover" loading="lazy" />
               </div>
             </div>
           ))}
@@ -434,51 +434,20 @@ function ConversionFeatures() {
 function Pricing() {
   const plans = [
     {
-      name: "Starter",
-      description: "Perfect for individuals and small projects",
-      price: "9.9",
-      credits: "3,000",
-      features: [
-        "3,000 Credits",
-        "500 Daily Free Credits",
-        "100 Credits per Generation",
-        "Custom Domain Supported",
-        "Download Source Code",
-        "Free SEO Tools Included",
-        "Standard Generation Speed",
-      ]
+      name: "Free",
+      description: "Try it without signing up",
+      price: "₹0",
+      credits: "3 Tokens",
+      features: ["3 tokens total", "Create 1 site + a few edits", "Shareable preview links", "Projects sidebar"],
     },
     {
       name: "Pro",
-      description: "Ideal for professionals and growing teams",
-      price: "29.9",
-      credits: "10,000",
+      description: "For clients and daily work",
+      price: "₹999/mo",
+      credits: "20 Tokens / month",
       featured: true,
-      features: [
-        "10,000 Credits",
-        "500 Daily Free Credits",
-        "100 Credits per Generation",
-        "Custom Domain Supported",
-        "Download Source Code",
-        "Free SEO Tools Included",
-        "Priority Generation Speed",
-      ]
+      features: ["20 tokens/month", "Faster generation", "Priority updates", "Everything in Free"],
     },
-    {
-      name: "Business",
-      description: "Built for enterprises and large teams",
-      price: "49.9",
-      credits: "18,000",
-      features: [
-        "18,000 Credits",
-        "500 Daily Free Credits",
-        "100 Credits per Generation",
-        "Custom Domain Supported",
-        "Download Source Code",
-        "Free SEO Tools Included",
-        "Highest Priority Speed",
-      ]
-    }
   ];
 
   return (
@@ -489,15 +458,14 @@ function Pricing() {
             Simple, transparent pricing
           </div>
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Choose the plan that <span className="text-primary">works for you</span>
+            Start free, upgrade when ready
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Whether you're an individual creator or an enterprise team, we have a plan for you.<br/>
-            Buy credits, use on demand — no subscription pressure.
+            Start with 3 tokens. Upgrade to Pro for 20 tokens every month.
           </p>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-8 lg:grid-cols-2 lg:max-w-4xl lg:mx-auto">
           {plans.map((p) => (
             <div
               key={p.name}
@@ -518,10 +486,9 @@ function Pricing() {
               </div>
               <div className="mb-8">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">${p.price}</span>
-                  <span className="text-sm text-muted-foreground">/one time</span>
+                  <span className="text-4xl font-bold">{p.price}</span>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">{p.credits} credits · ${ (parseFloat(p.price) / parseInt(p.credits.replace(',',''))).toFixed(5) }/credit</p>
+                <p className="mt-2 text-sm font-bold text-primary">{p.credits}</p>
               </div>
               <ul className="mb-8 space-y-4 text-sm">
                 {p.features.map((f) => (
@@ -531,22 +498,19 @@ function Pricing() {
                   </li>
                 ))}
               </ul>
-              <button
-                className={`w-full rounded-xl py-3 text-sm font-semibold transition-all ${
+              <a
+                href={p.featured ? "/pro" : "/build"}
+                className={`inline-flex w-full items-center justify-center rounded-xl py-3 text-sm font-semibold transition-all ${
                   p.featured
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:scale-[1.02]"
                     : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                 }`}
               >
-                {p.featured ? "Buy Pro Package" : p.name === "Business" ? "Purchase Enterprise" : "Buy Now"}
-              </button>
+                {p.featured ? "Upgrade to Pro" : "Start Free"}
+              </a>
             </div>
           ))}
         </div>
-        
-        <p className="mt-12 text-center text-xs text-muted-foreground">
-          All paid plans are one time purchases. Credits never expire. The more you buy, the lower the price per credit.
-        </p>
       </div>
     </section>
   );
@@ -555,20 +519,20 @@ function Pricing() {
 function FAQ() {
   const faqs = [
     {
-      q: "Do credits expire?",
-      a: "No. Purchased credits are valid forever and you can use them anytime. Daily free credits are only valid for that day and cannot be accumulated.",
+      q: "How do tokens work?",
+      a: "Each time you generate or update a website it uses 1 token. Free users get 3 tokens total. Pro users get 20 tokens every month.",
     },
     {
-      q: "What is Logo Generation Cost?",
-      a: "Logo generation costs are typically included in your credit balance. Each generation uses a fixed amount of credits as specified in your plan.",
+      q: "Do I need to sign up?",
+      a: "No. You can generate as a guest and still get shareable preview links. You can upgrade to Pro anytime.",
     },
     {
-      q: "What's the difference between Free and Paid plans?",
-      a: "Free users get daily limited credits. Paid plans offer a large bulk of credits, custom domains, source code downloads, and faster generation speeds.",
+      q: "Can I share my generated site?",
+      a: "Yes. Every generated website gets a shareable link you can send to anyone to view in the browser.",
     },
     {
-      q: "Can I upgrade my plan anytime?",
-      a: "Yes! Since we use a one-time credit system, you can purchase any package at any time to add to your balance.",
+      q: "Can I upgrade anytime?",
+      a: "Yes. Upgrade to Pro to unlock 20 tokens/month.",
     },
     {
       q: "What payment methods are supported?",

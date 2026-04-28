@@ -6,6 +6,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+type Plan = "free" | "pro";
+
 const SYSTEM_PROMPT = `You are an expert landing page designer. You generate complete, single-file HTML landing pages.
 
 RULES:
@@ -42,6 +44,151 @@ function extractHtml(text: string): string {
   return raw;
 }
 
+function addDays(d: Date, days: number) {
+  const out = new Date(d);
+  out.setDate(out.getDate() + days);
+  return out;
+}
+
+async function getActor(
+  supabase: ReturnType<typeof createClient>,
+  req: Request,
+  guestIdFromBody: unknown,
+): Promise<
+  | {
+      kind: "user";
+      id: string;
+      plan: Plan;
+      tokensRemaining: number;
+      tokenPeriodStart: Date;
+      isAdmin: boolean;
+    }
+  | { kind: "guest"; id: string; plan: Plan; tokensRemaining: number; tokenPeriodStart: Date }
+> {
+  const guestId = typeof guestIdFromBody === "string" ? guestIdFromBody.trim() : "";
+
+  // Try authenticated user first (if Authorization present)
+  const authHeader = req.headers.get("Authorization");
+  if (authHeader) {
+    const token = authHeader.replace("Bearer ", "");
+    const {
+      data: { user },
+      error: userErr,
+    } = await supabase.auth.getUser(token);
+    if (!userErr && user) {
+      const { data: profile, error: profileErr } = await supabase
+        .from("profiles")
+        .select("tokens_remaining, token_period_start, plan, is_admin")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (profileErr) throw profileErr;
+
+      if (!profile) {
+        const nowIso = new Date().toISOString();
+        const { error: insProfileErr } = await supabase.from("profiles").insert({
+          id: user.id,
+          email: user.email ?? null,
+          is_admin: false,
+          tokens_remaining: 3,
+          plan: "free",
+          token_period_start: nowIso,
+        });
+        if (insProfileErr) throw insProfileErr;
+        return {
+          kind: "user",
+          id: user.id,
+          plan: "free",
+          tokensRemaining: 3,
+          tokenPeriodStart: new Date(nowIso),
+          isAdmin: false,
+        };
+      }
+
+      const plan: Plan = profile.plan === "pro" ? "pro" : "free";
+      return {
+        kind: "user",
+        id: user.id,
+        plan,
+        tokensRemaining: typeof profile.tokens_remaining === "number" ? profile.tokens_remaining : 0,
+        tokenPeriodStart: new Date(profile.token_period_start ?? new Date().toISOString()),
+        isAdmin: !!profile.is_admin,
+      };
+    }
+  }
+
+  if (!guestId) throw new Error("Missing guestId");
+
+  const { data: guest, error: guestErr } = await supabase
+    .from("guest_profiles")
+    .select("tokens_remaining, token_period_start, plan")
+    .eq("id", guestId)
+    .maybeSingle();
+  if (guestErr) throw guestErr;
+
+  if (!guest) {
+    const nowIso = new Date().toISOString();
+    const { error: insGuestErr } = await supabase.from("guest_profiles").insert({
+      id: guestId,
+      tokens_remaining: 3,
+      plan: "free",
+      token_period_start: nowIso,
+    });
+    if (insGuestErr) throw insGuestErr;
+    return {
+      kind: "guest",
+      id: guestId,
+      plan: "free",
+      tokensRemaining: 3,
+      tokenPeriodStart: new Date(nowIso),
+    };
+  }
+
+  const plan: Plan = guest.plan === "pro" ? "pro" : "free";
+  return {
+    kind: "guest",
+    id: guestId,
+    plan,
+    tokensRemaining: typeof guest.tokens_remaining === "number" ? guest.tokens_remaining : 0,
+    tokenPeriodStart: new Date(guest.token_period_start ?? new Date().toISOString()),
+  };
+}
+
+async function maybeResetMonthlyTokens(
+  supabase: ReturnType<typeof createClient>,
+  actor:
+    | {
+        kind: "user";
+        id: string;
+        plan: Plan;
+        tokensRemaining: number;
+        tokenPeriodStart: Date;
+        isAdmin: boolean;
+      }
+    | { kind: "guest"; id: string; plan: Plan; tokensRemaining: number; tokenPeriodStart: Date },
+) {
+  if (actor.plan !== "pro") return actor;
+
+  const now = new Date();
+  const nextReset = addDays(actor.tokenPeriodStart, 30);
+  if (now.getTime() < nextReset.getTime()) return actor;
+
+  const resetTo = 20;
+  const nowIso = now.toISOString();
+  if (actor.kind === "user") {
+    await supabase
+      .from("profiles")
+      .update({ tokens_remaining: resetTo, token_period_start: nowIso })
+      .eq("id", actor.id);
+    return { ...actor, tokensRemaining: resetTo, tokenPeriodStart: now };
+  }
+
+  await supabase
+    .from("guest_profiles")
+    .update({ tokens_remaining: resetTo, token_period_start: nowIso })
+    .eq("id", actor.id);
+  return { ...actor, tokensRemaining: resetTo, tokenPeriodStart: now };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -56,8 +203,116 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
+    const mode: string = (body.mode ?? "generate").toString();
     const pageId: string | undefined = body.pageId;
     const userMessage: string = (body.message ?? "").toString().trim();
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    let actor = await getActor(supabase, req, body.guestId);
+    actor = await maybeResetMonthlyTokens(supabase, actor);
+
+    if (mode === "balance") {
+      return new Response(
+        JSON.stringify({
+          plan: actor.plan,
+          tokensRemaining: actor.tokensRemaining,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (mode === "upgrade") {
+      const nowIso = new Date().toISOString();
+      const resetTo = 20;
+      if (actor.kind === "user") {
+        await supabase
+          .from("profiles")
+          .update({
+            plan: "pro",
+            tokens_remaining: resetTo,
+            token_period_start: nowIso,
+          })
+          .eq("id", actor.id);
+      } else {
+        await supabase
+          .from("guest_profiles")
+          .update({
+            plan: "pro",
+            tokens_remaining: resetTo,
+            token_period_start: nowIso,
+          })
+          .eq("id", actor.id);
+      }
+      return new Response(
+        JSON.stringify({
+          plan: "pro",
+          tokensRemaining: resetTo,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (mode === "save") {
+      const targetPageId: string | undefined = body.pageId;
+      const htmlToSave: string = (body.html ?? "").toString();
+      const messagesToSave = body.messages ?? null;
+
+      if (!targetPageId || !htmlToSave) {
+        return new Response(JSON.stringify({ error: "pageId and html are required" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { data: existing, error } = await supabase
+        .from("pages")
+        .select("id, user_id, guest_id")
+        .eq("id", targetPageId)
+        .maybeSingle();
+      if (error) throw error;
+      if (!existing) {
+        return new Response(JSON.stringify({ error: "Page not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (actor.kind === "user") {
+        if (existing.user_id && existing.user_id !== actor.id && !actor.isAdmin) {
+          return new Response(JSON.stringify({ error: "Forbidden" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      } else {
+        if (existing.guest_id && existing.guest_id !== actor.id) {
+          return new Response(JSON.stringify({ error: "Forbidden" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      const { error: updErr } = await supabase
+        .from("pages")
+        .update({
+          html: htmlToSave,
+          messages: messagesToSave,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", targetPageId);
+      if (updErr) throw updErr;
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          plan: actor.plan,
+          tokensRemaining: actor.tokensRemaining,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
     if (!userMessage) {
       return new Response(JSON.stringify({ error: "Message is required" }), {
@@ -72,49 +327,24 @@ Deno.serve(async (req) => {
       });
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const tokensBlocked =
+      actor.kind === "user"
+        ? (!actor.isAdmin && actor.tokensRemaining <= 0)
+        : actor.tokensRemaining <= 0;
 
-    // Get user from auth header
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("Missing Authorization header");
-    }
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: userErr } = await supabase.auth.getUser(token);
-    if (userErr || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Check tokens
-    const { data: profile, error: profileErr } = await supabase
-      .from("profiles")
-      .select("tokens_remaining, last_token_reset, is_admin")
-      .eq("id", user.id)
-      .single();
-    
-    if (profileErr) throw profileErr;
-
-    let tokens = profile.tokens_remaining;
-    const lastReset = new Date(profile.last_token_reset);
-    const now = new Date();
-    
-    // Reset tokens if a day has passed
-    if (now.getTime() - lastReset.getTime() > 24 * 60 * 60 * 1000) {
-      tokens = 20;
-      await supabase
-        .from("profiles")
-        .update({ tokens_remaining: 20, last_token_reset: now.toISOString() })
-        .eq("id", user.id);
-    }
-
-    if (tokens <= 0 && !profile.is_admin) {
-      return new Response(JSON.stringify({ error: "Daily token limit reached (20 websites/day)" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (tokensBlocked) {
+      return new Response(
+        JSON.stringify({
+          error:
+            actor.plan === "pro"
+              ? "Monthly token limit reached (20/month)."
+              : "Free token limit reached (3 total). Upgrade to Pro for 20 tokens/month.",
+        }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     // Load existing page if editing
@@ -123,24 +353,36 @@ Deno.serve(async (req) => {
       html: string;
       prompt: string;
       messages: Array<{ role: string; content: string }>;
-      user_id: string;
+      user_id: string | null;
+      guest_id: string | null;
     };
     let existing: ExistingPage | null = null;
 
     if (pageId) {
       const { data, error } = await supabase
         .from("pages")
-        .select("id, html, prompt, messages, user_id")
+        .select("id, html, prompt, messages, user_id, guest_id")
         .eq("id", pageId)
         .maybeSingle();
       if (error) throw error;
       existing = (data ?? null) as ExistingPage | null;
 
-      if (existing && existing.user_id !== user.id && !profile.is_admin) {
-        return new Response(JSON.stringify({ error: "Forbidden" }), {
-          status: 403,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+      if (existing) {
+        if (actor.kind === "user") {
+          if (existing.user_id && existing.user_id !== actor.id && !actor.isAdmin) {
+            return new Response(JSON.stringify({ error: "Forbidden" }), {
+              status: 403,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+        } else {
+          if (existing.guest_id && existing.guest_id !== actor.id) {
+            return new Response(JSON.stringify({ error: "Forbidden" }), {
+              status: 403,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+        }
       }
     }
 
@@ -228,12 +470,21 @@ Deno.serve(async (req) => {
     const html = extractHtml(rawContent);
 
     // Decrement tokens
-    if (!profile.is_admin) {
+    if (actor.kind === "user") {
+      if (!actor.isAdmin) {
+        await supabase
+          .from("profiles")
+          .update({ tokens_remaining: Math.max(0, actor.tokensRemaining - 1) })
+          .eq("id", actor.id);
+      }
+    } else {
       await supabase
-        .from("profiles")
-        .update({ tokens_remaining: tokens - 1 })
-        .eq("id", user.id);
+        .from("guest_profiles")
+        .update({ tokens_remaining: Math.max(0, actor.tokensRemaining - 1) })
+        .eq("id", actor.id);
     }
+    const tokensRemainingAfter =
+      actor.kind === "user" && actor.isAdmin ? actor.tokensRemaining : Math.max(0, actor.tokensRemaining - 1);
 
     if (!html || !/<html/i.test(html)) {
       console.error("Invalid HTML from model:", rawContent.slice(0, 500));
@@ -273,6 +524,8 @@ Deno.serve(async (req) => {
           pageId: existing.id,
           html,
           assistantMessage: newAssistantMsg,
+          plan: actor.plan,
+          tokensRemaining: tokensRemainingAfter,
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
@@ -300,7 +553,8 @@ Deno.serve(async (req) => {
       html,
       prompt: userMessage,
       messages: initialMessages,
-      user_id: user.id,
+      user_id: actor.kind === "user" ? actor.id : null,
+      guest_id: actor.kind === "guest" ? actor.id : null,
     });
     if (insErr) throw insErr;
 
@@ -309,6 +563,8 @@ Deno.serve(async (req) => {
         pageId: newId,
         html,
         assistantMessage: newAssistantMsg,
+        plan: actor.plan,
+        tokensRemaining: tokensRemainingAfter,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );

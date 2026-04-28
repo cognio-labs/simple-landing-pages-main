@@ -11,11 +11,16 @@ import {
   Plus,
   ChevronDown
 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { getOrCreateGuestId } from "@/lib/guest";
 
 export function AppSidebar() {
   const location = useLocation();
+  const guestId = useMemo(() => getOrCreateGuestId(), []);
+  const [projects, setProjects] = useState<Array<{ id: string; prompt: string; created_at: string }>>([]);
   
   const mainItems = [
     { icon: Home, label: "Home", href: "/" },
@@ -24,12 +29,30 @@ export function AppSidebar() {
     { icon: Link2, label: "Connectors", href: "#" },
   ];
 
-  const projectItems = [
-    { icon: Folder, label: "All projects", href: "/build" },
-    { icon: Star, label: "Starred", href: "#" },
-    { icon: User, label: "Created by me", href: "#" },
-    { icon: Share2, label: "Shared with me", href: "#" },
-  ];
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      const { data: sess } = await supabase.auth.getSession();
+      const userId = sess.session?.user?.id ?? null;
+
+      const base = supabase
+        .from("pages")
+        .select("id, prompt, created_at")
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      const { data, error } = userId
+        ? await base.eq("user_id", userId as any)
+        : await base.eq("guest_id", guestId as any);
+
+      if (!active) return;
+      if (error) return;
+      setProjects((data as any[])?.map((p) => ({ id: p.id, prompt: p.prompt, created_at: p.created_at })) ?? []);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [guestId]);
 
   return (
     <aside className="hidden flex-col border-r border-border bg-card/30 w-64 lg:flex">
@@ -66,19 +89,32 @@ export function AppSidebar() {
             </h3>
           </div>
           <div className="space-y-1">
-            {projectItems.map((item) => (
+            <Link
+              to={"/build" as any}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                location.pathname === "/build"
+                  ? "bg-accent text-foreground font-medium"
+                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+              )}
+            >
+              <Folder className="h-4 w-4" />
+              All projects
+            </Link>
+
+            {projects.slice(0, 10).map((p) => (
               <Link
-                key={item.label}
-                to={item.href as any}
+                key={p.id}
+                to={"/build" as any}
+                search={{ id: p.id } as any}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-                  location.pathname === item.href && item.href !== "#"
-                    ? "bg-accent text-foreground font-medium" 
-                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                  "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
                 )}
+                title={p.prompt}
               >
-                <item.icon className="h-4 w-4" />
-                {item.label}
+                <span className="h-2 w-2 rounded-full bg-primary/60" />
+                <span className="truncate">{p.prompt}</span>
               </Link>
             ))}
             <button className="flex items-center justify-between w-full px-3 py-2 text-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground rounded-lg transition-colors">

@@ -1,40 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Sparkles, PlusCircle, LogOut, ChevronDown } from "lucide-react";
+import { LogOut, PlusCircle, Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { getOrCreateGuestId } from "@/lib/guest";
 
 export function SiteHeader() {
   const navigate = useNavigate();
+  const guestId = useMemo(() => getOrCreateGuestId(), []);
   const [session, setSession] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [plan, setPlan] = useState<"free" | "pro">("free");
+  const [tokensRemaining, setTokensRemaining] = useState<number>(3);
+
+  async function refreshBalance() {
+    const { data, error } = await supabase.functions.invoke("generate-page", {
+      body: { mode: "balance", guestId },
+    });
+    if (error || !data) return;
+    const d = data as { plan?: "free" | "pro"; tokensRemaining?: number };
+    if (d.plan) setPlan(d.plan);
+    if (typeof d.tokensRemaining === "number") setTokensRemaining(d.tokensRemaining);
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      if (session) fetchProfile(session.user.id);
+      void refreshBalance();
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (session) fetchProfile(session.user.id);
-      else setProfile(null);
+      void refreshBalance();
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  async function fetchProfile(userId: string) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-    if (data) setProfile(data);
-  }
+  }, [guestId]);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -63,9 +66,9 @@ export function SiteHeader() {
           <a href="#templates" className="transition-colors hover:text-foreground">
             Templates
           </a>
-          <a href="#pricing" className="transition-colors hover:text-foreground">
+          <Link to={"/pro" as any} className="transition-colors hover:text-foreground">
             Pricing
-          </a>
+          </Link>
           <a href="#faq" className="transition-colors hover:text-foreground">
             FAQ
           </a>
@@ -73,13 +76,20 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-4">
           <div className="hidden items-center gap-4 sm:flex">
-            {profile && (
-              <div className="flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50/50 px-3 py-1 text-xs font-bold text-orange-700">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-orange-400 text-[10px] text-white">₵</span>
-                {profile.tokens_remaining}
-                <PlusCircle className="h-3.5 w-3.5 text-orange-400" />
-              </div>
-            )}
+            <Link
+              to={"/pro" as any}
+              className="flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50/50 px-3 py-1 text-xs font-bold text-orange-700 hover:bg-orange-50/80"
+              title="View plans"
+            >
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-orange-400 text-[10px] text-white">
+                T
+              </span>
+              {tokensRemaining}
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-700/80">
+                {plan === "pro" ? "PRO" : "FREE"}
+              </span>
+              <PlusCircle className="h-3.5 w-3.5 text-orange-400" />
+            </Link>
           </div>
 
           <div className="flex items-center gap-2">
@@ -119,3 +129,4 @@ export function SiteHeader() {
     </header>
   );
 }
+

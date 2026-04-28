@@ -17,27 +17,90 @@ export type Database = {
       pages: {
         Row: {
           created_at: string
+          guest_id: string | null
           html: string
           id: string
           messages: Json
           prompt: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          guest_id?: string | null
           html: string
           id: string
           messages?: Json
           prompt: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          guest_id?: string | null
           html?: string
           id?: string
           messages?: Json
           prompt?: string
           updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          is_admin: boolean | null
+          plan: string
+          token_period_start: string
+          tokens_remaining: number
+          last_token_reset: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id: string
+          is_admin?: boolean | null
+          plan?: string
+          token_period_start?: string
+          tokens_remaining?: number
+          last_token_reset?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_admin?: boolean | null
+          plan?: string
+          token_period_start?: string
+          tokens_remaining?: number
+          last_token_reset?: string | null
+        }
+        Relationships: []
+      }
+      guest_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          plan: string
+          token_period_start: string
+          tokens_remaining: number
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          plan?: string
+          token_period_start?: string
+          tokens_remaining?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plan?: string
+          token_period_start?: string
+          tokens_remaining?: number
         }
         Relationships: []
       }

@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppSidebar } from "@/components/app-sidebar";
+import { getOrCreateGuestId } from "@/lib/guest";
 import {
   buildVersions,
   VersionsSidebar,
@@ -60,30 +61,41 @@ export const Route = createFileRoute("/build")({
 function BuildPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const guestId = getOrCreateGuestId();
 
   const [session, setSession] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [plan, setPlan] = useState<"free" | "pro">("free");
+  const [tokensRemaining, setTokensRemaining] = useState<number>(3);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setAuthLoading(false);
-      if (!session) {
-        navigate({ to: "/" });
-      }
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (!session) {
-        navigate({ to: "/" });
-      }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+    void (async () => {
+      const { data, error: invokeErr } = await supabase.functions.invoke("generate-page", {
+        body: { mode: "balance", guestId },
+      });
+      if (invokeErr) return;
+      if (!data) return;
+      const d = data as { plan?: "free" | "pro"; tokensRemaining?: number };
+      if (d.plan) setPlan(d.plan);
+      if (typeof d.tokensRemaining === "number") setTokensRemaining(d.tokensRemaining);
+    })();
+  }, [authLoading, guestId]);
 
   const [pageId, setPageId] = useState<string | null>(search.id ?? null);
   const [html, setHtml] = useState<string>("");
@@ -102,6 +114,7 @@ function BuildPage() {
   const initialPromptRef = useRef<string | null>(search.prompt ?? null);
   const sentInitialRef = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   // Load existing page if ID in URL
   useEffect(() => {
@@ -194,7 +207,7 @@ function BuildPage() {
     try {
       const { data, error: invokeErr } = await supabase.functions.invoke(
         "generate-page",
-        { body: { message, pageId } },
+        { body: { message, pageId, guestId } },
       );
       if (invokeErr) throw invokeErr;
       if (!data || (data as { error?: string }).error) {
@@ -204,7 +217,11 @@ function BuildPage() {
         pageId: string;
         html: string;
         assistantMessage: string;
+        plan?: "free" | "pro";
+        tokensRemaining?: number;
       };
+      if (result.plan) setPlan(result.plan);
+      if (typeof result.tokensRemaining === "number") setTokensRemaining(result.tokensRemaining);
       setHtml(result.html);
       setMessages((prev) => {
         const next: ChatMessage[] = [
@@ -227,6 +244,10 @@ function BuildPage() {
           replace: true,
         });
       }
+      // Lovable-like behavior: jump user to the live preview after generation.
+      requestAnimationFrame(() => {
+        previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Generation failed";
       setError(msg);
@@ -248,15 +269,10 @@ function BuildPage() {
     setActiveVersionIndex(v.index);
     setError(null);
     if (pageId) {
-      const { error: updErr } = await supabase
-        .from("pages")
-        .update({
-          html: v.html,
-          messages: truncated,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", pageId);
-      if (updErr) setError(updErr.message);
+      const { error: invokeErr } = await supabase.functions.invoke("generate-page", {
+        body: { mode: "save", pageId, html: v.html, messages: truncated, guestId },
+      });
+      if (invokeErr) setError(invokeErr.message);
     }
   }
 
@@ -308,8 +324,6 @@ function BuildPage() {
       </div>
     );
   }
-
-  if (!session) return null;
 
   return (
     <TooltipProvider>
@@ -485,8 +499,17 @@ function BuildPage() {
                         aria-label="Send message"
                       >
                         <ArrowUp className="h-4 w-4" />
-                      </button>
-                    </div>
+              </button>
+              <div className="hidden sm:flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50/50 px-3 py-1 text-xs font-bold text-orange-700">
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-orange-400 text-[10px] text-white">
+                  T
+                </span>
+                {tokensRemaining}
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-700/80">
+                  {plan === "pro" ? "PRO" : "FREE"}
+                </span>
+              </div>
+            </div>
                     <p className="mt-2 px-2 text-[11px] text-muted-foreground">
                       Press <kbd className="font-sans font-medium">Enter</kbd> to send · <kbd className="font-sans font-medium">Shift+Enter</kbd> for new line
                     </p>
@@ -588,7 +611,10 @@ function BuildPage() {
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-primary/5">
+                <div
+                  ref={previewRef}
+                  className="flex-1 overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-primary/5"
+                >
                   {tab === "preview" ? (
                     <div className="flex h-full w-full items-center justify-center bg-muted/20">
                       <div 
