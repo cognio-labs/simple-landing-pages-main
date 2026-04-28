@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ProRouteImport } from './routes/pro'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConnectorsRouteImport } from './routes/connectors'
 import { Route as BuildRouteImport } from './routes/build'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -31,6 +32,11 @@ const ResourcesRoute = ResourcesRouteImport.update({
 const ProRoute = ProRouteImport.update({
   id: '/pro',
   path: '/pro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConnectorsRoute = ConnectorsRouteImport.update({
