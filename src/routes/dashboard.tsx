@@ -18,7 +18,7 @@ export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard Â· PagePilot AI" },
-      { name: "description", content: "Manage and edit your generated landing pages." },
+      { name: "description", content: "Manage and edit your generated websites." },
     ],
   }),
   component: DashboardPage,
@@ -243,4 +243,3 @@ function DashboardPage() {
     </div>
   );
 }
-

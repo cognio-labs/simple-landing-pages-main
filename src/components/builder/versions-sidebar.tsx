@@ -52,7 +52,7 @@ export function VersionsSidebar({ versions, activeIndex, onRevert, open }: Props
   return (
     <aside
       aria-label="Version history"
-      className="absolute inset-y-0 left-0 z-50 w-72 flex-col border-r border-border bg-background/95 backdrop-blur-md transition-all lg:relative lg:flex lg:w-64 lg:bg-background/60 lg:backdrop-blur-none"
+      className="flex w-72 shrink-0 flex-col border-r border-border bg-background/80 backdrop-blur-md lg:w-64 lg:bg-card/30 lg:backdrop-blur-none"
     >
       <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
         <History className="h-3.5 w-3.5" />

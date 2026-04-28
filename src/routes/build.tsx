@@ -19,11 +19,8 @@ import {
   Tablet,
   Smartphone,
   Maximize2,
-  Code as CodeIcon,
-  Eye,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { AppSidebar } from "@/components/app-sidebar";
 import { getOrCreateGuestId } from "@/lib/guest";
 import {
   buildVersions,
@@ -48,10 +45,10 @@ export const Route = createFileRoute("/build")({
   }),
   head: () => ({
     meta: [
-      { title: "Build your landing page · PagePilot AI" },
+      { title: "Build your website · PagePilot AI" },
       {
         name: "description",
-        content: "Chat with the AI to build and refine your landing page live.",
+        content: "Chat with the AI to build and refine your website live.",
       },
     ],
   }),
@@ -109,7 +106,6 @@ function BuildPage() {
     null,
   );
   const [viewMode, setViewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
-  const [tab, setTab] = useState<"preview" | "code">("preview");
 
   const initialPromptRef = useRef<string | null>(search.prompt ?? null);
   const sentInitialRef = useRef(false);
@@ -141,7 +137,7 @@ function BuildPage() {
     })();
   }, [pageId]);
 
-  // Send the initial prompt (from landing page) automatically once
+  // Send the initial prompt (from the home page) automatically once
   useEffect(() => {
     if (sentInitialRef.current) return;
     const p = initialPromptRef.current;
@@ -157,46 +153,6 @@ function BuildPage() {
       behavior: "smooth",
     });
   }, [messages, loading]);
-
-  const [simulatedCode, setSimulatedCode] = useState("");
-
-  useEffect(() => {
-    let interval: any;
-    if (loading && tab === "code") {
-      const lines = [
-        "<!DOCTYPE html>",
-        '<html lang="en">',
-        "<head>",
-        '  <meta charset="UTF-8">',
-        '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-        '  <script src="https://cdn.tailwindcss.com"></script>',
-        '  <title>Generating...</title>',
-        "</head>",
-        "<body>",
-        '  <header class="bg-white shadow-sm">',
-        '    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">',
-        "      <!-- Building header... -->",
-        "    </nav>",
-        "  </header>",
-        '  <main class="min-h-screen">',
-        '    <section class="relative bg-gradient-brand text-white py-20">',
-        "      <!-- Crafting hero section... -->",
-        "    </section>",
-        "  </main>",
-        "</body>",
-        "</html>"
-      ];
-      let i = 0;
-      interval = setInterval(() => {
-        setSimulatedCode((prev) => prev + (lines[i] || "") + "\n");
-        i++;
-        if (i >= lines.length) i = 0;
-      }, 150);
-    } else {
-      setSimulatedCode("");
-    }
-    return () => clearInterval(interval);
-  }, [loading, tab]);
 
   async function send(message: string) {
     if (!message.trim() || loading) return;
@@ -302,7 +258,7 @@ function BuildPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `landing-page-${pageId || "export"}.html`;
+    a.download = `website-${pageId || "export"}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -328,16 +284,14 @@ function BuildPage() {
   return (
     <TooltipProvider>
       <div className="flex h-screen bg-background overflow-hidden">
-        <AppSidebar />
-        
         <div className="flex flex-1 flex-col min-w-0">
           {/* Header */}
           <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur">
             <div className="flex items-center gap-3">
               <Link
-                to="/"
+                to="/dashboard"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label="Back to home"
+                aria-label="Back to dashboard"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Link>
@@ -485,7 +439,7 @@ function BuildPage() {
                         placeholder={
                           pageId
                             ? "Ask for changes… e.g. 'make the hero darker'"
-                            : "Describe your landing page idea…"
+                            : "Describe the website you want to build…"
                         }
                         rows={2}
                         className="flex-1 resize-none bg-transparent px-2 py-1 text-sm outline-none placeholder:text-muted-foreground/70"
@@ -521,26 +475,7 @@ function BuildPage() {
               <main className="flex flex-col overflow-hidden bg-muted/40 p-4" aria-label="Page preview">
                 {/* Toolbar */}
                 <div className="mb-4 flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-2 shadow-sm">
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant={tab === "preview" ? "secondary" : "ghost"}
-                      size="sm"
-                      onClick={() => setTab("preview")}
-                      className="h-8 gap-1.5 text-xs"
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                      Preview
-                    </Button>
-                    <Button
-                      variant={tab === "code" ? "secondary" : "ghost"}
-                      size="sm"
-                      onClick={() => setTab("code")}
-                      className="h-8 gap-1.5 text-xs"
-                    >
-                      <CodeIcon className="h-3.5 w-3.5" />
-                      Code
-                    </Button>
-                  </div>
+                  <div className="px-2 text-xs font-semibold text-muted-foreground">Preview</div>
 
                   <div className="flex flex-1 items-center justify-center">
                     <div className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-1.5">
@@ -615,34 +550,27 @@ function BuildPage() {
                   ref={previewRef}
                   className="flex-1 overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-primary/5"
                 >
-                  {tab === "preview" ? (
-                    <div className="flex h-full w-full items-center justify-center bg-muted/20">
-                      <div 
-                        className="h-full transition-all duration-300 ease-in-out overflow-hidden"
-                        style={{
-                          width: viewMode === "desktop" ? "100%" : viewMode === "tablet" ? "768px" : "375px",
-                          maxWidth: "100%"
-                        }}
-                      >
+                  <div className="flex h-full w-full items-center justify-center bg-muted/20">
+                    <div
+                      className="h-full transition-all duration-300 ease-in-out overflow-hidden"
+                      style={{
+                        width:
+                          viewMode === "desktop" ? "100%" : viewMode === "tablet" ? "768px" : "375px",
+                        maxWidth: "100%",
+                      }}
+                    >
                         {html ? (
                           <iframe
-                            title="Generated landing page preview"
+                            title="Generated website preview"
                             srcDoc={html}
                             className="h-full w-full bg-white"
                             sandbox="allow-scripts allow-same-origin"
                           />
-                        ) : (
-                          <PreviewSkeleton loading={loading} />
-                        )}
-                      </div>
+                      ) : (
+                        <PreviewSkeleton loading={loading} />
+                      )}
                     </div>
-                  ) : (
-                    <div className="h-full w-full overflow-hidden bg-[#0d1117] text-gray-300">
-                      <pre className="h-full w-full overflow-auto p-6 font-mono text-xs leading-relaxed">
-                        <code>{loading ? (simulatedCode || "// Generating...") : (html || "// No code generated yet")}</code>
-                      </pre>
-                    </div>
-                  )}
+                  </div>
                 </div>
               </main>
             </div>
@@ -710,7 +638,7 @@ function PreviewSkeleton({ loading }: { loading: boolean }) {
         </div>
       </div>
       <p className="mt-6 font-display text-xl font-semibold">
-        {loading ? "Crafting your page…" : "Your page will appear here"}
+        {loading ? "Crafting your website…" : "Your website will appear here"}
       </p>
       <p className="mt-2 max-w-sm text-sm text-muted-foreground">
         {loading

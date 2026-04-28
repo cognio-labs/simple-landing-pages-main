@@ -8,23 +8,24 @@ const corsHeaders = {
 
 type Plan = "free" | "pro";
 
-const SYSTEM_PROMPT = `You are an expert landing page designer. You generate complete, single-file HTML landing pages.
+const SYSTEM_PROMPT = `You are an expert website designer. You generate complete, multi-page websites as a single-file HTML app.
 
 RULES:
 - Output ONLY the raw HTML document. No markdown fences, no explanations, no commentary.
 - Start with <!DOCTYPE html> and end with </html>.
 - Use Tailwind CSS via CDN: <script src="https://cdn.tailwindcss.com"></script>
-- Use Google Fonts via <link> tags. Pick distinctive, modern fonts that match the brief.
-- Make it visually stunning: gradients, generous spacing, bold typography, smooth hover states.
-- Fully responsive (mobile-first).
-- Include semantic sections: hero, features/benefits, social proof or testimonials, CTA, footer.
-- Use real-looking copy tailored to the brief, not Lorem ipsum.
-- For images, use high-quality, relevant https://images.unsplash.com/... URLs for EVERY section that needs an image (hero, features, etc.). Ensure EVERY "box" or section has a descriptive, high-quality image.
-- Use inline SVG for icons.
+- Use distinctive Google Fonts via <link> tags (avoid generic defaults).
+- Build a REAL website, not a single long landing page.
+  - Include a top navigation with 4–7 pages (e.g. Home, About, Services, Pricing, Blog, Contact — pick what fits).
+  - Implement client-side hash routing (location.hash) to switch pages without reloading.
+  - Each page should have its own hero + supporting sections (not just one shared hero).
+- No external images. Use gradient backgrounds and/or inline SVG illustrations for visuals.
+- Make it visually strong: deliberate typography, spacing, subtle shadows/borders, hover states.
+- Fully responsive (mobile-first) and accessible (semantic tags, focus styles).
 - Add subtle CSS animations where they enhance the design.
-- The page must work standalone in any browser.
+- The website must work standalone in any browser.
 
-When the user asks you to EDIT an existing page, return the FULL updated HTML document, never a diff.`;
+When the user asks you to EDIT an existing website, return the FULL updated HTML document, never a diff.`;
 
 function randomId(len = 10) {
   const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -411,7 +412,7 @@ Deno.serve(async (req) => {
     } else {
       conversation.push({
         role: "user",
-        content: `Build a landing page for the following brief. Return ONLY the full HTML document.\n\nBrief: ${userMessage}`,
+        content: `Build a multi-page website for the following brief. Return ONLY the full HTML document.\n\nBrief: ${userMessage}`,
       });
     }
 
@@ -500,8 +501,8 @@ Deno.serve(async (req) => {
     }
 
     const newAssistantMsg = existing
-      ? `Updated the page: "${userMessage.slice(0, 80)}${userMessage.length > 80 ? "…" : ""}"`
-      : `Created your landing page based on: "${userMessage.slice(0, 80)}${userMessage.length > 80 ? "…" : ""}"`;
+      ? `Updated the website: "${userMessage.slice(0, 80)}${userMessage.length > 80 ? "…" : ""}"`
+      : `Created your website based on: "${userMessage.slice(0, 80)}${userMessage.length > 80 ? "…" : ""}"`;
 
     if (existing) {
       const updatedMessages = [

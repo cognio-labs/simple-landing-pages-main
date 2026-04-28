@@ -18,17 +18,17 @@ export const Route = createFileRoute("/p/$pageId")({
       {
         title: loaderData
           ? `${truncate(loaderData.prompt, 60)} · PagePilot AI`
-          : "Build High-Converting Landing Pages · PagePilot AI",
+          : "Build Websites · PagePilot AI",
       },
       {
         name: "description",
         content: loaderData
           ? truncate(loaderData.prompt, 155)
-          : "An AI-generated landing page from PagePilot AI.",
+          : "An AI-generated website from PagePilot AI.",
       },
       {
         property: "og:title",
-        content: loaderData ? truncate(loaderData.prompt, 60) : "PagePilot AI Landing Page",
+        content: loaderData ? truncate(loaderData.prompt, 60) : "PagePilot AI Website",
       },
       {
         property: "og:description",
